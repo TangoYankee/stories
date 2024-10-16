@@ -1,0 +1,12 @@
+services:
+  gdal:
+    build: gdal/.
+  minio:
+    build:
+      context: minio/.
+  postgis:
+    build:
+      context: postgis/.
+  tippecanoe:
+    build:
+      context: tippecanoe/.
