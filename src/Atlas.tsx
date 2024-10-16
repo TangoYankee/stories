@@ -6,22 +6,33 @@ import { PMTilesVectorSource } from "ol-pmtiles";
 import { useGeographic } from "ol/proj";
 import { applyStyle } from "ol-mapbox-style";
 
+const FILE_BUCKET = import.meta.env.VITE_FILE_BUCKET;
+
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
   onMount(() => {
     useGeographic();
     const nycLayer = new VectorTile({
       source: new PMTilesVectorSource({
-        url: import.meta.env.VITE_BASEMAP_SOURCE,
+        url: `${FILE_BUCKET}/nyc_20242003.pmtiles`,
         attributions: ["Openstreetmap contributors"],
       }),
     });
+
     applyStyle(
       nycLayer,
-      import.meta.env.VITE_BASEMAP_STYLE,
+      `${FILE_BUCKET}/basemap_select.json`
     );
+
+    const subwayAdaLayer = new VectorTile({
+      source: new PMTilesVectorSource({
+        url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
+        attributions: ["NYS open data"]
+      })
+    })
+
     new Map({
       target: "atlas",
-      layers: [nycLayer],
+      layers: [nycLayer, subwayAdaLayer],
       view: new View({
         center: [-74, 40.7],
         zoom: 11,

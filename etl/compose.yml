@@ -1,0 +1,38 @@
+services:
+  gdal:
+    build: gdal/.
+    environment:
+      POSTGRES_USER: $FLOW_DATABASE_USER
+      PGPASSWORD: $FLOW_DATABASE_PASSWORD
+      POSTGRES_DB: $FLOW_DATABASE_NAME
+    volumes:
+      - ./data:/data
+      - ./gdal/scripts:/scripts
+  minio:
+    build:
+      context: minio/.
+    environment:
+      DO_SPACES_ACCESS_KEY: $DO_SPACES_ACCESS_KEY
+      DO_SPACES_SECRET_KEY: $DO_SPACES_SECRET_KEY
+      DO_SPACES_ENDPOINT: $DO_SPACES_ENDPOINT
+    volumes:
+      - ./data:/data
+      - ./minio/scripts:/scripts
+  postgis:
+    build:
+      context: postgis/.
+    environment:
+      POSTGRES_USER: $FLOW_DATABASE_USER
+      POSTGRES_PASSWORD: $FLOW_DATABASE_PASSWORD
+      POSTGRES_DB: $FLOW_DATABASE_NAME
+    volumes:
+      - ./postgis/scripts:/var/lib/postgresql/scripts
+    ports:
+      - 5432:5432
+  tippecanoe:
+    build:
+      context: tippecanoe/.
+    volumes:
+      - ./data:/data
+      - ./tippecanoe/scripts:/scripts
+
