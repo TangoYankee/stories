@@ -15,7 +15,10 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
         attributions: ["Openstreetmap contributors"],
       }),
     });
-    applyStyle(nycLayer, import.meta.env.VITE_BASEMAP_STYLE);
+    applyStyle(
+      nycLayer,
+      import.meta.env.VITE_BASEMAP_STYLE,
+    );
     new Map({
       target: "atlas",
       layers: [nycLayer],
