@@ -5,9 +5,9 @@ services:
     build:
       context: minio/.
     environment:
-      - DO_SPACES_ACCESS_KEY=value
-      - DO_SPACES_SECRET_KEY=value
-      - DO_SPACES_ENDPOINT=value
+      DO_SPACES_ACCESS_KEY: $DO_SPACES_ACCESS_KEY
+      DO_SPACES_SECRET_KEY: $DO_SPACES_SECRET_KEY
+      DO_SPACES_ENDPOINT: $DO_SPACES_ENDPOINT
     volumes:
       - ./data:/data
       - ./minio/scripts:/scripts
