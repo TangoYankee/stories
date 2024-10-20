@@ -2,7 +2,7 @@ FROM ubuntu:noble
  
 RUN apt-get update
 RUN apt-get install -y git
-RUN git clone https://github.com/mapbox/tippecanoe.git
+RUN git clone https://github.com/felt/tippecanoe.git
 
 RUN apt-get install -y make
 RUN apt-get install -y g++
