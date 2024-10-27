@@ -4,35 +4,39 @@ import { Map, View } from "ol";
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { useGeographic } from "ol/proj";
-import { Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
+
+const FILE_BUCKET = import.meta.env.VITE_FILE_BUCKET;
 
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
   onMount(() => {
     useGeographic();
-
-    const vectorLayer = new VectorTile({
-      declutter: true,
+    const subwayAdaLayer = new VectorTile({
       source: new PMTilesVectorSource({
-        url: "https://r2-public.protomaps.com/protomaps-sample-datasets/nz-buildings-v3.pmtiles",
-        attributions: ["© Land Information New Zealand"],
+        url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
+        attributions: ["NYS open data"],
       }),
       style: new Style({
-        stroke: new Stroke({
-          color: "gray",
-          width: 1,
-        }),
-        fill: new Fill({
-          color: "rgba(20,20,20,0.9)",
+        image: new Circle({
+          radius: 6,
+          fill: new Fill({
+            color: "red",
+          }),
+          stroke: new Stroke({
+            color: "white",
+            width: 3,
+          }),
         }),
       }),
     });
 
     new Map({
       target: "atlas",
-      layers: [vectorLayer],
+      layers: [subwayAdaLayer],
       view: new View({
-        center: [172.606201, -43.55651],
-        zoom: 7,
+        center: [-74, 40.7],
+        zoom: 11,
+        extent: [-75, 40.2, -73, 41.2],
       }),
     });
   });
