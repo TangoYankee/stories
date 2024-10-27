@@ -2,3 +2,5 @@
 build
 coverage
 styled-system
+etl
+pnpm-lock.yaml

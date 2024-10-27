@@ -15,6 +15,9 @@ const gitignorePath = path.resolve(__dirname, ".gitignore");
 export default [
   includeIgnoreFile(gitignorePath),
   {
+    ignores: ["/etl", "pnpm-lock.yaml"],
+  },
+  {
     files: ["postcss.config.cjs"],
     languageOptions: {
       globals: globals.node,
