@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "ol": "^10.2.1",
-    "ol-mapbox-style": "^12.3.5",
     "ol-pmtiles": "^1.0.2",
     "solid-js": "^1.8.11"
   }

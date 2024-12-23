@@ -4,7 +4,6 @@ import { Map, View } from "ol";
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { useGeographic } from "ol/proj";
-import { applyStyle } from "ol-mapbox-style";
 import { Circle, Style, Fill, Stroke } from "ol/style";
 
 const FILE_BUCKET = import.meta.env.VITE_FILE_BUCKET;
@@ -24,8 +23,66 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
         url: `${FILE_BUCKET}/nyc_20242003.pmtiles`,
         attributions: ["Openstreetmap contributors"],
       }),
+      style: (feature) => {
+        const layer: string = feature.get("layer");
+        const kind: string = feature.get("kind");
+
+        const getColor = (layer: string, kind: string) => {
+          switch (layer) {
+            case "background": {
+              return "rgb(221, 221, 221)";
+            }
+            case "earth": {
+              return "rgb(233, 234, 220)";
+            }
+            case "water": {
+              return "rgb(190, 218, 215)";
+            }
+            case "landuse": {
+              switch (kind) {
+                case "grass":
+                case "wood":
+                case "wetland":
+                case "park":
+                case "cemetary":
+                case "protected_area":
+                case "nature_reserve":
+                case "forest":
+                case "village_green":
+                case "playground":
+                case "golf_course": {
+                  return "rgb(211, 216, 192)";
+                }
+                case "aerodrome": {
+                  return "rgb(219, 231, 231)"
+                }
+                default:
+                  // Same as earth layer
+                  return "rgb(233, 234, 220)";
+              }
+            }
+            default:
+              return null;
+          }
+        };
+
+        const color = getColor(layer, kind);
+        if (color === null) return;
+        const shape = feature.getGeometry()?.getType();
+        switch (shape) {
+          case "Polygon":
+          case "MultiPolygon": {
+            return new Style({
+              fill: new Fill({
+                color,
+              }),
+            });
+          }
+          default:
+            return;
+        }
+      },
     });
-    applyStyle(nycLayer, `${FILE_BUCKET}/basemap_select.json`);
 
     const subwayAdaLayer = new VectorTile({
       source: new PMTilesVectorSource({
@@ -66,5 +123,6 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
       }),
     });
   });
+
   return <div id="atlas" {...props} />;
 }
