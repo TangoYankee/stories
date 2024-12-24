@@ -4,7 +4,7 @@ import { Map, View } from "ol";
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { useGeographic } from "ol/proj";
-import { Circle, Style, Fill, Stroke } from "ol/style";
+import { Circle, Fill, Stroke, Style } from "ol/style";
 
 const FILE_BUCKET = import.meta.env.VITE_FILE_BUCKET;
 
@@ -54,12 +54,11 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
                   return "rgb(211, 216, 192)";
                 }
                 case "aerodrome": {
-                  return "rgb(219, 231, 231)"
+                  return "rgb(219, 231, 231)";
                 }
-                default:
-                  // Same as earth layer
-                  return "rgb(233, 234, 220)";
               }
+              // Same as earth layer
+              return "rgb(233, 234, 220)";
             }
             default:
               return null;
@@ -86,18 +85,18 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
 
     const subwayAdaLayer = new VectorTile({
       source: new PMTilesVectorSource({
-        url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
+        url:
+          `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
         attributions: ["NYS open data"],
       }),
       style: (feature) => {
         const { ada } = feature.getProperties() as SubwayStationProperties;
         // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
-        const fillColor =
-          ada === "1"
-            ? "rgba(153,213,148,0.9)"
-            : ada === "2"
-              ? "rgba(255,255,191,0.9)"
-              : "rgba(252,141,89,0.9)";
+        const fillColor = ada === "1"
+          ? "rgba(153,213,148,0.9)"
+          : ada === "2"
+          ? "rgba(255,255,191,0.9)"
+          : "rgba(252,141,89,0.9)";
         return new Style({
           image: new Circle({
             radius: 3,
