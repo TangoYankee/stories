@@ -1,4 +1,4 @@
-import { JSX, JSXElement, onMount } from "solid-js";
+import { createSignal, JSX, JSXElement, onMount } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
 import VectorTile from "ol/layer/VectorTile";
@@ -16,6 +16,9 @@ type SubwayStationProperties = {
 };
 
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
+  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
+    string | null
+  >(null);
   onMount(() => {
     useGeographic();
     const nycLayer = new VectorTile({
@@ -89,17 +92,22 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
           `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
         attributions: ["NYS open data"],
       }),
-      style: (feature) => {
-        const { ada } = feature.getProperties() as SubwayStationProperties;
+      style: (feature, resolution) => {
+        const { ada, station_id } = feature
+          .getProperties() as SubwayStationProperties;
         // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
-        const fillColor = ada === "1"
+        const fillColor = station_id === selectedSubwayStationId()
+          ? "rgba(0, 0, 255, 1)"
+          : ada === "1"
           ? "rgba(153,213,148,0.9)"
           : ada === "2"
           ? "rgba(255,255,191,0.9)"
           : "rgba(252,141,89,0.9)";
+
+        const radius = 10 / Math.log(resolution);
         return new Style({
           image: new Circle({
-            radius: 3,
+            radius,
             fill: new Fill({
               color: fillColor,
             }),
@@ -112,7 +120,7 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
       },
     });
 
-    new Map({
+    const map = new Map({
       target: "atlas",
       layers: [nycLayer, subwayAdaLayer],
       view: new View({
@@ -120,6 +128,33 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
         zoom: 11,
         extent: [-75, 40.2, -73, 41.2],
       }),
+    });
+
+    map.on("click", async (e) => {
+      const stationFeatures = await subwayAdaLayer.getFeatures(e.pixel);
+      const nextStationId = stationFeatures.length === 0
+        ? null
+        : (stationFeatures[0].getProperties() as SubwayStationProperties)
+          .station_id;
+      const prevStationId = selectedSubwayStationId();
+      // ne previous and no next:
+      // do nothing
+      if (prevStationId === null && nextStationId === null) return;
+
+      // previous and next are same id
+      // set station id to null
+      if (prevStationId === nextStationId) {
+        setSelectedSubwayStationId(null);
+      }
+
+      // previous and next are not otherwise equarl
+      // (no previous and a next, or a previous and no next)
+      // set station id to value of next (whether next is string or null)
+      if (prevStationId !== nextStationId) {
+        setSelectedSubwayStationId(nextStationId);
+      }
+
+      subwayAdaLayer.changed();
     });
   });
 
