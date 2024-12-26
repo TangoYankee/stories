@@ -1,0 +1,31 @@
+.ol-control-attribution {
+  position: relative;
+  background-color: var(--colors-slate-50);
+  opacity: 0.9;
+  padding: var(--spacing-0\.5);
+  border-radius: var(--radii-sm);
+
+  button {
+    display: none;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  li {
+    display: inline;
+  }
+
+  a {
+    color: var(--colors-sky-600);
+
+    &:visited {
+      color: var(--colors-purple-600);
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
