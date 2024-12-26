@@ -11,7 +11,7 @@ export type SubwayStationsAda = {
   ada: string;
 };
 
-export const subwayStationsAdaLayer = (selectedId: Accessor<string | null>) =>
+export const subwayStationsAda = (selectedId: Accessor<string | null>) =>
   new VectorTile({
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
