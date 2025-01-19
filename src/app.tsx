@@ -40,11 +40,8 @@ const App: Component = () => {
         class={css({
           gridRow: "2 / 3",
           gridColumn: "1 / 2",
-          backgroundColor: "#e8e8e8",
-          height: "8rem",
-          alignSelf: "end",
-          width: "12rem",
-          justifySelf: "center",
+          height: "fit-content",
+          width: "fit-content",
           margin: "0.5rem",
           zIndex: "1",
         })}

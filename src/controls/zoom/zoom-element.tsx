@@ -4,8 +4,6 @@ export function ZoomControl(
   props: JSX.HTMLAttributes<HTMLDivElement>,
 ): JSXElement {
   return (
-    <div id="zoom-control" {...props}>
-      <p>zoom</p>
-    </div>
+    <div id="zoom-control" {...props}/>
   );
 }
