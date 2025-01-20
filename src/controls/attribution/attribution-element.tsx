@@ -4,9 +4,5 @@ import "./attribution-style.css";
 export function AttributionControl(
   props: JSX.HTMLAttributes<HTMLDivElement>,
 ): JSXElement {
-  return (
-    <div id="attribution-control" {...props}>
-      <p>content</p>
-    </div>
-  );
+  return <div id="attribution-control" {...props} />;
 }

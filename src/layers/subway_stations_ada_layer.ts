@@ -15,7 +15,7 @@ export const subwayStationsAda = (selectedId: Accessor<string | null>) =>
   new VectorTile({
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
-      attributions: ["NYS open data"],
+      attributions: `<a href="https://data.ny.gov/">NYS open data</a>`,
     }),
     style: (feature, resolution) => {
       const { ada, station_id } = feature

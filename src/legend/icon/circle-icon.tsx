@@ -4,6 +4,8 @@ import { cva, type RecipeVariant } from "../../../styled-system/css";
 const circleIconStyle = cva({
   base: {
     margin: "1",
+    stroke: "stone.900",
+    strokeWidth: "5",
   },
   variants: {
     level: {

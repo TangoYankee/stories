@@ -25,14 +25,12 @@ const App: Component = () => {
       />
       <AttributionControl
         class={css({
-          gridRow: "2 / 3",
+          gridRow: "3 / 4",
           gridColumn: "1 / 2",
-          backgroundColor: "#e8e8e8",
-          height: "8rem",
+          height: "fit-content",
+          width: "fit-content",
+          justifySelf: "right",
           alignSelf: "end",
-          width: "12rem",
-          justifySelf: "left",
-          margin: "0.5rem",
           zIndex: "1",
         })}
       />
@@ -42,7 +40,7 @@ const App: Component = () => {
           gridColumn: "1 / 2",
           height: "fit-content",
           width: "fit-content",
-          margin: "0.5rem",
+          margin: "2",
           zIndex: "1",
         })}
       />
@@ -50,12 +48,14 @@ const App: Component = () => {
         class={css({
           gridRow: "2 / 3",
           gridColumn: "1 / 2",
-          backgroundColor: "#e8e8e8",
-          height: "8rem",
+          backgroundColor: "slate.50/90",
+          borderRadius: "sm",
+          padding: "1",
+          height: "fit-content",
+          width: "fit-content",
           alignSelf: "end",
-          width: "12rem",
           justifySelf: "right",
-          margin: "0.5rem",
+          margin: "2",
           zIndex: "1",
         })}
       />

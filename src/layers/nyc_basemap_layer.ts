@@ -45,7 +45,8 @@ export const nycBasemap = () =>
   new VectorTile({
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/nyc_20242003.pmtiles`,
-      attributions: ["Openstreetmap contributors"],
+      attributions:
+        `© <a href="https://www.openstreetmap.org">Openstreetmap</a>; `,
     }),
     style: (feature) => {
       const layer: string = feature.get("layer");
