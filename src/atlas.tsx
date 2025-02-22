@@ -5,12 +5,12 @@ import { useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls";
 import { nycBasemap, subwayStationsAda } from "./layers";
 import type { SubwayStationsAda } from "./layers";
+import { selectedSubwayStationIdSignal } from "./signals";
 
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
-  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
-    string | null
-  >(null);
-  onMount(() => {
+  const [selectedSubwayStationId, setSelectedSubwayStationId] = selectedSubwayStationIdSignal;
+
+    onMount(() => {
     useGeographic();
 
     const nycBasemapLayer = nycBasemap();
@@ -28,10 +28,13 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
 
     map.on("click", async (e) => {
       const stationFeatures = await subwayStationsAdaLayer.getFeatures(e.pixel);
-      const nextStationId = stationFeatures.length === 0
+      const stationProperties = stationFeatures.length === 0
         ? null
-        : (stationFeatures[0].getProperties() as SubwayStationsAda)
-          .station_id;
+        : (stationFeatures[0].getProperties() as SubwayStationsAda);
+      const nextStationId = stationProperties === null
+        ? null
+        : stationProperties.station_id;
+      console.debug("station properties", stationProperties);
       const prevStationId = selectedSubwayStationId();
       // ne previous and no next:
       // do nothing

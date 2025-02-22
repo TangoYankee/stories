@@ -3,6 +3,7 @@ import { css } from "../styled-system/css";
 import { Atlas } from "./atlas";
 import { Legend } from "./legend";
 import { AttributionControl, ZoomControl } from "./controls";
+import { SubwayDetailsPanel } from "./panels/subway-details";
 
 export type Display = "closed" | "half" | "full";
 const App: Component = () => {
@@ -59,6 +60,19 @@ const App: Component = () => {
           zIndex: "1",
         })}
       />
+      <SubwayDetailsPanel class={css({
+        gridRow: "2 / 3",
+        gridColumn: "1 / 2",
+        zIndex: "1",
+        height: "fit-content",
+        width: "fit-content",
+        alignSelf: "start",
+        justifySelf: "right",
+        margin: "2",
+        padding: "1",
+        borderRadius: "sm",
+        backgroundColor: "slate.50/90"
+      })}/>
       <Atlas
         class={css({
           gridRow: "2 / 4",
