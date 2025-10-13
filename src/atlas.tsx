@@ -3,7 +3,7 @@ import "ol/ol.css";
 import { Map, View } from "ol";
 import { useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls";
-import { nycBasemap, subwayStationsAda } from "./layers";
+import { cityCouncilDistrict, nycBasemap, subwayStationsAda } from "./layers";
 import type { SubwayStationsAda } from "./layers";
 
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
@@ -15,9 +15,14 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
 
     const nycBasemapLayer = nycBasemap();
     const subwayStationsAdaLayer = subwayStationsAda(selectedSubwayStationId);
+    const cityCouncilDistrictLayer = cityCouncilDistrict();
     const map = new Map({
       target: "atlas",
-      layers: [nycBasemapLayer, subwayStationsAdaLayer],
+      layers: [
+        nycBasemapLayer,
+        cityCouncilDistrictLayer,
+        subwayStationsAdaLayer,
+      ],
       controls: [attribution(), zoom()],
       view: new View({
         center: [-74, 40.7],
@@ -31,7 +36,7 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
       const nextStationId = stationFeatures.length === 0
         ? null
         : (stationFeatures[0].getProperties() as SubwayStationsAda)
-          .station_id;
+          .id;
       const prevStationId = selectedSubwayStationId();
       // ne previous and no next:
       // do nothing
