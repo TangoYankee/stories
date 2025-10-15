@@ -4,8 +4,8 @@ tippecanoe \
     -z7 \
     --projection=EPSG:4326 \
     -o \
-    data/2024_aug_22_subway_ada.pmtiles \
-    -l subway_station data/subway_ada.json \
+    data/ada-subway-stations.pmtiles \
+    -l fill data/subway_ada_fill.geojson \
     --force
 
 tippecanoe \
@@ -23,7 +23,7 @@ tippecanoe \
     --force
 
 tile-join \
-    -o data/city-council-district.pmtiles \
+    -o data/city-council-districts.pmtiles \
     data/city-council-district-fill.pmtiles \
     data/city-council-district-label.pmtiles \
     --force

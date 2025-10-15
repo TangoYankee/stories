@@ -6,4 +6,4 @@ psql --host=localhost \
     -U $POSTGRES_USER \
     -d $POSTGRES_DB \
     --single-transaction \
-    --file ./scripts/subway_ada.sql
+    --file ./scripts/transform.sql

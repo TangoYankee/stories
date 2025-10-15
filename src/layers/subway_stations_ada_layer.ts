@@ -5,7 +5,7 @@ import { Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
 export type SubwayStationsAda = {
-  station_id: string;
+  ogc_fid: string;
   stop_name: string;
   daytime_routes: string;
   ada: string;
@@ -14,14 +14,14 @@ export type SubwayStationsAda = {
 export const subwayStationsAda = (selectedId: Accessor<string | null>) =>
   new VectorTile({
     source: new PMTilesVectorSource({
-      url: `${FILE_BUCKET}/nyc_subway_stations/2024_aug_22_subway_ada.pmtiles`,
+      url: `${FILE_BUCKET}/ada-subway-stations.pmtiles`,
       attributions: `<a href="https://data.ny.gov/">NYS open data</a>`,
     }),
     style: (feature, resolution) => {
-      const { ada, station_id } = feature
+      const { ada, ogc_fid } = feature
         .getProperties() as SubwayStationsAda;
       // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
-      const fillColor = station_id === selectedId()
+      const fillColor = ogc_fid === selectedId()
         ? "rgba(0, 0, 255, 1)"
         : ada === "1"
         ? "rgba(153,213,148,0.9)"

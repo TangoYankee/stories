@@ -1,7 +1,7 @@
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { VectorTile } from "ol/layer";
 import { FILE_BUCKET } from "../constants";
-import { Stroke, Style, Text } from "ol/style";
+import { Fill, Stroke, Style, Text } from "ol/style";
 
 export type CityCouncilDistrict = {
   id: string;
@@ -10,7 +10,7 @@ export type CityCouncilDistrict = {
 export const cityCouncilDistrict = () =>
   new VectorTile({
     source: new PMTilesVectorSource({
-      url: `${FILE_BUCKET}/city-council-district.pmtiles`,
+      url: `${FILE_BUCKET}/city-council-districts.pmtiles`,
       attributions:
         `<a href="https://opendata.cityofnewyork.us/">NYC open data</a>`,
     }),
@@ -29,6 +29,9 @@ export const cityCouncilDistrict = () =>
             color: "gray",
             width: 1,
           }),
+          fill: new Fill({
+            color: "red"
+          })
         };
       return new Style(style);
     },
