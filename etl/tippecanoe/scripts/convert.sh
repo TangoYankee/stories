@@ -1,6 +1,7 @@
 #! /bin/sh
 
 tippecanoe \
+    -B4 \
     -z7 \
     --projection=EPSG:4326 \
     -o \
@@ -16,6 +17,7 @@ tippecanoe \
     --force
 
 tippecanoe \
+    -B4 \
     -z13 \
     --projection=EPSG:4326 \
     -o data/city-council-district-label.pmtiles \
