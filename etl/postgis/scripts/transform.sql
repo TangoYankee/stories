@@ -31,10 +31,16 @@ CREATE TABLE IF NOT EXISTS city_council_district(
 	label geography(Point, 4326)
 );
 
+ALTER TABLE source_city_council_district
+	ADD COLUMN IF NOT EXISTS wkb_geometry_valid geometry(MultiPolygon, 4326);
+
+UPDATE source_city_council_district
+	SET wkb_geometry_valid = ST_MakeValid(wkb_geometry);
+
 INSERT INTO city_council_district (district, fill, label)
 SELECT
 	LPAD(coundist::text, 2, '0'),
-	ST_MakeValid(wkb_geometry),
-	(ST_MaximumInscribedCircle(wkb_geometry)).center
+	wkb_geometry_valid,
+	(ST_MaximumInscribedCircle(wkb_geometry_valid)).center
 FROM source_city_council_district
 ORDER BY coundist;
