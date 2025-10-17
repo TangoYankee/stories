@@ -34,6 +34,6 @@ CREATE TABLE IF NOT EXISTS city_council_district(
 INSERT INTO city_council_district (id, fill, label)
 SELECT
 	LPAD(coundist::text, 2, '0')::char(2),
-	wkb_geometry,
+	ST_MakeValid(wkb_geometry),
 	(ST_MaximumInscribedCircle(wkb_geometry)).center
 FROM source_city_council_district;
