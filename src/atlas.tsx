@@ -36,7 +36,7 @@ export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
       const nextStationId = stationFeatures.length === 0
         ? null
         : (stationFeatures[0].getProperties() as SubwayStationsAda)
-          .ogc_fid;
+          .id;
       const prevStationId = selectedSubwayStationId();
       // ne previous and no next:
       // do nothing

@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS
     city_council_district;
 
 CREATE TABLE IF NOT EXISTS subway_ada (
-    ogc_fid char(3) PRIMARY KEY,
+    id smallint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     stop_name text,
     daytime_routes text,
     ada char(1) CHECK (ada IN ('0', '1', '2')),
@@ -11,29 +11,30 @@ CREATE TABLE IF NOT EXISTS subway_ada (
 );
 
 INSERT INTO subway_ada (
-	ogc_fid,
 	stop_name,
 	daytime_routes,
 	ada,
 	fill
 )
 SELECT
-	LPAD(ogc_fid::text, 3, '0'),
 	stop_name,
 	daytime_routes,
 	ada,
 	wkb_geometry
-FROM source_subway_ada;
+FROM source_subway_ada
+ORDER BY ogc_fid;
 
 CREATE TABLE IF NOT EXISTS city_council_district(
-	id char(2) PRIMARY KEY,
+    id smallint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	district char(2),
 	fill geography(MultiPolygon, 4326),
 	label geography(Point, 4326)
 );
 
-INSERT INTO city_council_district (id, fill, label)
+INSERT INTO city_council_district (district, fill, label)
 SELECT
-	LPAD(coundist::text, 2, '0')::char(2),
+	LPAD(coundist::text, 2, '0'),
 	ST_MakeValid(wkb_geometry),
 	(ST_MaximumInscribedCircle(wkb_geometry)).center
-FROM source_city_council_district;
+FROM source_city_council_district
+ORDER BY coundist;

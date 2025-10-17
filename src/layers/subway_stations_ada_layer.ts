@@ -5,7 +5,7 @@ import { Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
 export type SubwayStationsAda = {
-  ogc_fid: string;
+  id: string;
   stop_name: string;
   daytime_routes: string;
   ada: string;
@@ -18,10 +18,10 @@ export const subwayStationsAda = (selectedId: Accessor<string | null>) =>
       attributions: `<a href="https://data.ny.gov/">NYS open data</a>`,
     }),
     style: (feature, resolution) => {
-      const { ada, ogc_fid } = feature
+      const { ada, id } = feature
         .getProperties() as SubwayStationsAda;
       // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
-      const fillColor = ogc_fid === selectedId()
+      const fillColor = id === selectedId()
         ? "rgba(0, 0, 255, 1)"
         : ada === "1"
         ? "rgba(153,213,148,0.9)"
