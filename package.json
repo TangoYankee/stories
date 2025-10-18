@@ -11,14 +11,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@pandacss/dev": "^0.51.1",
-    "solid-devtools": "^0.29.2",
-    "vite": "^5.0.11",
-    "vite-plugin-solid": "^2.8.2"
+    "@pandacss/dev": "^1.4.2",
+    "solid-devtools": "^0.34.4",
+    "vite": "^7.1.10",
+    "vite-plugin-solid": "^2.11.9"
   },
   "dependencies": {
-    "ol": "^10.2.1",
-    "ol-pmtiles": "^1.0.2",
-    "solid-js": "^1.8.11"
+    "ol": "^10.6.1",
+    "ol-pmtiles": "^2.0.2",
+    "solid-js": "^1.9.9"
   }
 }

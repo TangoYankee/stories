@@ -1,6 +1,6 @@
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
-import { FILE_BUCKET } from "../constants";
+import { FILE_BUCKET } from "../constants.ts";
 import { Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 

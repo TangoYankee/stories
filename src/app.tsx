@@ -1,8 +1,9 @@
 import { type Component } from "solid-js";
-import { css } from "../styled-system/css";
-import { Atlas } from "./atlas";
-import { Legend } from "./legend";
-import { AttributionControl, ZoomControl } from "./controls";
+// @ts-ignore .ts file not created by styled-system
+import { css } from "../styled-system/css/index.d.ts";
+import { Atlas } from "./atlas.tsx";
+import { Legend } from "./legend/index.ts";
+import { AttributionControl, ZoomControl } from "./controls/index.tsx";
 
 export type Display = "closed" | "half" | "full";
 const App: Component = () => {

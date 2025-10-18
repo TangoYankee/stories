@@ -1,2 +1,2 @@
-export * from "./attribution-control";
-export * from "./attribution-element";
+export * from "./attribution-control.ts";
+export * from "./attribution-element.tsx";

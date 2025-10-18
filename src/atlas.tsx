@@ -2,9 +2,13 @@ import { createSignal, JSX, JSXElement, onMount } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
 import { useGeographic } from "ol/proj";
-import { attribution, zoom } from "./controls";
-import { cityCouncilDistrict, nycBasemap, subwayStationsAda } from "./layers";
-import type { SubwayStationsAda } from "./layers";
+import { attribution, zoom } from "./controls/index.tsx";
+import {
+  cityCouncilDistrict,
+  nycBasemap,
+  SubwayStationsAda,
+  subwayStationsAda,
+} from "./layers/index.ts";
 
 export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<

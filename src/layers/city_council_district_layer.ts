@@ -1,6 +1,6 @@
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { VectorTile } from "ol/layer";
-import { FILE_BUCKET } from "../constants";
+import { FILE_BUCKET } from "../constants.ts";
 import { Fill, Stroke, Style, Text } from "ol/style";
 
 export type CityCouncilDistrict = {
@@ -34,7 +34,7 @@ export const cityCouncilDistrict = () =>
             font: "12px Calibri,sans-serif",
             text: district,
             fill: new Fill({
-              color:"rgba(25, 31, 52, 0.6)"
+              color: "rgba(25, 31, 52, 0.6)",
             }),
           }),
         }

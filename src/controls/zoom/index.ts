@@ -1,2 +1,2 @@
-export * from "./zoom-control";
-export * from "./zoom-element";
+export * from "./zoom-control.ts";
+export * from "./zoom-element.tsx";

@@ -1,5 +1,5 @@
 import { PMTilesVectorSource } from "ol-pmtiles";
-import { FILE_BUCKET } from "../constants";
+import { FILE_BUCKET } from "../constants.ts";
 import VectorTile from "ol/layer/VectorTile";
 import { Fill, Style } from "ol/style";
 
