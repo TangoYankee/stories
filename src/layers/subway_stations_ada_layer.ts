@@ -1,7 +1,7 @@
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { FILE_BUCKET } from "../constants.ts";
-import { Accessor } from "solid-js";
+import { type Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
 export type SubwayStationsAda = {
@@ -11,12 +11,16 @@ export type SubwayStationsAda = {
   ada: string;
 };
 
-export const subwayStationsAda = (selectedId: Accessor<string | null>) =>
+export const subwayStationsAda = (
+  selectedId: Accessor<string | null>,
+  isVisible: Accessor<boolean>,
+) =>
   new VectorTile({
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/ada-subway-stations.pmtiles`,
-      attributions: `<a href="https://data.ny.gov/">NYS open data</a>`,
+      attributions: `<a href="https://data.ny.gov/">NYS open data</a>; `,
     }),
+    visible: isVisible(),
     style: (feature, resolution) => {
       const { ada, id } = feature
         .getProperties() as SubwayStationsAda;

@@ -23,7 +23,7 @@ export const cityCouncilDistrict = () =>
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/city-council-districts.pmtiles`,
       attributions:
-        `<a href="https://opendata.cityofnewyork.us/">NYC open data</a>`,
+        `<a href="https://opendata.cityofnewyork.us/">NYC open data</a>; `,
     }),
     style: (feature) => {
       const { id, district, layer } = feature

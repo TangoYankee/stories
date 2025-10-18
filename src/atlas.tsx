@@ -1,4 +1,11 @@
-import { createSignal, JSX, JSXElement, onMount } from "solid-js";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  JSX,
+  JSXElement,
+  onMount,
+} from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
 import { useGeographic } from "ol/proj";
@@ -10,16 +17,35 @@ import {
   subwayStationsAda,
 } from "./layers/index.ts";
 
-export function Atlas(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
+export function Atlas(
+  props: JSX.HTMLAttributes<HTMLDivElement> & {
+    isSubwayStationVisible: Accessor<boolean>;
+    isCityCouncilDistrictVisible: Accessor<boolean>;
+  },
+): JSXElement {
+  const { isSubwayStationVisible, isCityCouncilDistrictVisible } = props;
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
   >(null);
+  createEffect(() => {
+    const isVisible = isSubwayStationVisible();
+    subwayStationsAdaLayer.set("visible", isVisible);
+  });
+
+  createEffect(() => {
+    const isVisible = isCityCouncilDistrictVisible();
+    cityCouncilDistrictLayer.set("visible", isVisible);
+  });
+
+  const nycBasemapLayer = nycBasemap();
+  const subwayStationsAdaLayer = subwayStationsAda(
+    selectedSubwayStationId,
+    isSubwayStationVisible,
+  );
+  const cityCouncilDistrictLayer = cityCouncilDistrict();
   onMount(() => {
     useGeographic();
 
-    const nycBasemapLayer = nycBasemap();
-    const subwayStationsAdaLayer = subwayStationsAda(selectedSubwayStationId);
-    const cityCouncilDistrictLayer = cityCouncilDistrict();
     const map = new Map({
       target: "atlas",
       layers: [
