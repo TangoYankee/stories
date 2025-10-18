@@ -2,7 +2,6 @@ import { type Component } from "solid-js";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../styled-system/css/index.d.ts";
 import { Atlas } from "./atlas.tsx";
-import { Legend } from "./legend/index.ts";
 import { AttributionControl, ZoomControl } from "./controls/index.tsx";
 import { Panel } from "./panel/index.ts";
 
@@ -14,8 +13,8 @@ const App: Component = () => {
         height: "100%",
         width: "100%",
         display: "grid",
-        gridTemplateRows: "7dvh 1dvh 85dvh 7dvh",
-        gridTemplateColumns: "1dvw 15dvw 1dvw 82dvw 1dvw",
+        gridTemplateRows: "3dvh 1dvh 93dvh 3dvh",
+        gridTemplateColumns: "1dvw 20dvw 1dvw 77dvw 1dvw",
       })}
     >
       <div
@@ -25,44 +24,44 @@ const App: Component = () => {
           backgroundColor: "#4D705C",
         })}
       />
-      <Panel class={css({
-        gridRow: "3 / 4",
-        gridColumn: "2 / 3",
-        height: "fit-content",
-        width: "100%",
-        backgroundColor: "slate.50/90",
-        borderRadius: "sm",
-        padding: "1",
-        zIndex: "1",
-      })} />
+      <Panel
+        class={css({
+          gridRow: "3 / 5",
+          gridColumn: "2 / 3",
+          _portrait: {
+            gridColumn: "1 / 6",
+            alignSelf: "end",
+          },
+          height: "fit-content",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: "slate.50/90",
+          borderRadius: "sm",
+          padding: "1",
+          zIndex: "1",
+        })}
+      />
       <ZoomControl
         class={css({
           gridRow: "3 / 4",
           gridColumn: "4 / 5",
+          _portrait: {
+            gridColumn: "2 / 3",
+          },
           height: "0",
           width: "fit-content",
-          zIndex: "1",
-        })}
-      />
-      <Legend
-        class={css({
-          gridRow: "3 / 4",
-          gridColumn: "4 / 5",
-          backgroundColor: "slate.50/90",
-          borderRadius: "sm",
-          padding: "1",
-          height: "fit-content",
-          width: "fit-content",
-          alignSelf: "end",
-          justifySelf: "right",
-          margin: "2",
           zIndex: "1",
         })}
       />
       <AttributionControl
         class={css({
           gridRow: "4 / 5",
-          gridColumn: "4 / 6",
+          _portrait: {
+            gridRow: "2 / 3",
+            alignSelf: "start",
+          },
+          gridColumn: "3 / 6",
           height: "fit-content",
           width: "fit-content",
           justifySelf: "right",

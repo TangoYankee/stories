@@ -6,10 +6,10 @@ import { css } from "../../styled-system/css/index.d.ts";
 export function Legend(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
   return (
     <div id="legend" {...props}>
-      <h2 class={css({ display: "flex", justifyContent: "center" })}>
+      <h2 class={css({ display: "flex" })}>
         Accessibility level
       </h2>
-      <div class={css({ display: "flex" })}>
+      <div class={css({ display: "flex", flexWrap: "wrap" })}>
         <div class={css({ display: "flex", alignItems: "center" })}>
           <CircleIcon level="positive" size="md" />
           <p>Full</p>
