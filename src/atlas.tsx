@@ -5,10 +5,11 @@ import {
   JSX,
   JSXElement,
   onMount,
+  type Setter,
 } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
-import { fromLonLat, useGeographic } from "ol/proj";
+import { useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls/index.tsx";
 import {
   cityCouncilDistrict,
@@ -22,9 +23,14 @@ export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
     isSubwayStationVisible: Accessor<boolean>;
     isCityCouncilDistrictVisible: Accessor<boolean>;
+    setFocusedStations: Setter<Array<SubwayStationsAda>>;
   },
 ): JSXElement {
-  const { isSubwayStationVisible, isCityCouncilDistrictVisible } = props;
+  const {
+    isSubwayStationVisible,
+    isCityCouncilDistrictVisible,
+    setFocusedStations,
+  } = props;
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
   >(null);
@@ -62,15 +68,14 @@ export function Atlas(
       }),
     });
 
-    map.on("moveend", async (e) => {
+    map.on("moveend", (e) => {
       const extent = e.frameState?.extent;
-      console.log("moveend extent", extent);
       if (extent === undefined || extent === null) {
         throw new Error("moveend: extent undefined");
       }
       const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
       const stationsRandom = features.map((feature) => {
-        const properties = feature.getProperties();
+        const properties = feature.getProperties() as SubwayStationsAda;
         const midpoint = feature.getFlatMidpoint();
         return {
           ...properties,
@@ -78,7 +83,6 @@ export function Atlas(
         };
       });
 
-      console.log("random stations", stationsRandom);
       const viewCenter = map.getView().getState().center;
       const stations = stationsRandom.toSorted((stationA, stationB) => {
         const midpointStationA = stationA.midpoint;
@@ -99,16 +103,7 @@ export function Atlas(
         return distanceStationA - distanceStationB;
       });
 
-      console.log("sorted stations", stations);
-
-      const distance = cartesianDistance({
-        x1: 0,
-        y1: 0,
-        x2: 3,
-        y2: 4,
-      });
-      console.log("distance", distance);
-      console.log("view", viewCenter);
+      setFocusedStations(stations.slice(0, 7));
     });
 
     map.on("click", async (e) => {

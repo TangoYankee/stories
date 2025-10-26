@@ -4,9 +4,13 @@ import { css } from "../styled-system/css/index.d.ts";
 import { Atlas } from "./atlas.tsx";
 import { AttributionControl, ZoomControl } from "./controls/index.tsx";
 import { Panel } from "./panel/index.ts";
+import { SubwayStationsAda } from "./layers/subway_stations_ada_layer.ts";
 
 export type Display = "closed" | "half" | "full";
 const App: Component = () => {
+  const [focusedStations, setFocusedStations] = createSignal<
+    Array<SubwayStationsAda>
+  >([]);
   const [isSubwayStationVisible, setIsSubwayStationVisible] = createSignal(
     true,
   );
@@ -34,6 +38,7 @@ const App: Component = () => {
         setIsSubwayStationVisible={setIsSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
         setIsCityCouncilDistrictVisible={setIsCityCouncilDistrictVisible}
+        focusedStations={focusedStations}
         class={css({
           gridRow: "3 / 5",
           gridColumn: "2 / 3",
@@ -79,6 +84,7 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        setFocusedStations={setFocusedStations}
         isSubwayStationVisible={isSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
         class={css({

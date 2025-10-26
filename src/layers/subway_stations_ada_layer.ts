@@ -4,12 +4,12 @@ import { FILE_BUCKET } from "../constants.ts";
 import { type Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
-export type SubwayStationsAda = {
+export interface SubwayStationsAda {
   id: string;
   stop_name: string;
   daytime_routes: string;
   ada: string;
-};
+}
 
 export const subwayStationsAda = (
   selectedId: Accessor<string | null>,

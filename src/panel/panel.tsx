@@ -3,7 +3,8 @@ import { Legend } from "../legend/index.ts";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../../styled-system/css/index.d.ts";
 import { Switch } from "../switch/switch.tsx";
-import { type Accessor, type Setter } from "solid-js";
+import { type Accessor, For, type Setter } from "solid-js";
+import { SubwayStationsAda } from "../layers/subway_stations_ada_layer.ts";
 
 export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
@@ -11,6 +12,7 @@ export function Panel(
     setIsSubwayStationVisible: Setter<boolean>;
     isCityCouncilDistrictVisible: Accessor<boolean>;
     setIsCityCouncilDistrictVisible: Setter<boolean>;
+    focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ) {
   const {
@@ -18,6 +20,7 @@ export function Panel(
     setIsSubwayStationVisible,
     isCityCouncilDistrictVisible,
     setIsCityCouncilDistrictVisible,
+    focusedStations,
   } = props;
   return (
     <div id="panel" {...props}>
@@ -44,6 +47,23 @@ export function Panel(
             flexDirection: "column",
           })}
         />
+        <For each={focusedStations()}>
+          {(station) => (
+            <div
+              class={css({
+                display: "flex",
+                flexDirection: "column",
+                margin: "1rem",
+              })}
+            >
+              <h3>{station.stop_name}, {station.daytime_routes}</h3>
+              <p>
+                {["Not", "Fully", "Partially"][parseInt(station.ada)]}{" "}
+                accessible
+              </p>
+            </div>
+          )}
+        </For>
       </div>
       <div
         class={css({
