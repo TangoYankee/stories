@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
-import { useGeographic } from "ol/proj";
+import { fromLonLat, useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls/index.tsx";
 import {
   cityCouncilDistrict,
@@ -60,6 +60,15 @@ export function Atlas(
         extent: [-75, 40.2, -73, 41.2],
       }),
     });
+
+    map.on("moveend", async(e) => {
+      const extent = e.frameState?.extent;
+      console.log("moveend extent", extent);
+      if(extent !== undefined && extent !== null) {
+        const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
+        console.log("features", features.map(feature => feature.getFlatMidpoint()))
+      }
+    })
 
     map.on("click", async (e) => {
       const stationFeatures = await subwayStationsAdaLayer.getFeatures(e.pixel);
