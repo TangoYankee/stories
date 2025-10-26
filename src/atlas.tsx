@@ -16,6 +16,7 @@ import {
   SubwayStationsAda,
   subwayStationsAda,
 } from "./layers/index.ts";
+import { cartesianDistance } from "./utils.tsx";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
@@ -61,14 +62,54 @@ export function Atlas(
       }),
     });
 
-    map.on("moveend", async(e) => {
+    map.on("moveend", async (e) => {
       const extent = e.frameState?.extent;
       console.log("moveend extent", extent);
-      if(extent !== undefined && extent !== null) {
-        const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
-        console.log("features", features.map(feature => feature.getFlatMidpoint()))
+      if (extent === undefined || extent === null) {
+        throw new Error("moveend: extent undefined");
       }
-    })
+      const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
+      const stationsRandom = features.map((feature) => {
+        const properties = feature.getProperties();
+        const midpoint = feature.getFlatMidpoint();
+        return {
+          ...properties,
+          midpoint,
+        };
+      });
+
+      console.log("random stations", stationsRandom);
+      const viewCenter = map.getView().getState().center;
+      const stations = stationsRandom.toSorted((stationA, stationB) => {
+        const midpointStationA = stationA.midpoint;
+        const midpointStationB = stationB.midpoint;
+        const distanceStationA = cartesianDistance({
+          x1: midpointStationA[0],
+          y1: midpointStationA[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+
+        const distanceStationB = cartesianDistance({
+          x1: midpointStationB[0],
+          y1: midpointStationB[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+        return distanceStationA - distanceStationB;
+      });
+
+      console.log("sorted stations", stations);
+
+      const distance = cartesianDistance({
+        x1: 0,
+        y1: 0,
+        x2: 3,
+        y2: 4,
+      });
+      console.log("distance", distance);
+      console.log("view", viewCenter);
+    });
 
     map.on("click", async (e) => {
       const stationFeatures = await subwayStationsAdaLayer.getFeatures(e.pixel);
