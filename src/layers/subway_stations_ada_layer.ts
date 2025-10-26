@@ -4,16 +4,17 @@ import { FILE_BUCKET } from "../constants.ts";
 import { type Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 
-export type SubwayStationsAda = {
+export interface SubwayStationsAda {
   id: string;
   stop_name: string;
   daytime_routes: string;
   ada: string;
-};
+}
 
 export const subwayStationsAda = (
   selectedId: Accessor<string | null>,
   isVisible: Accessor<boolean>,
+  focusedStations: Accessor<Array<SubwayStationsAda>>,
 ) =>
   new VectorTile({
     source: new PMTilesVectorSource({
@@ -34,6 +35,11 @@ export const subwayStationsAda = (
         : "rgba(252,141,89,0.9)";
 
       const radius = 10 / Math.log(resolution);
+      const isFocusedStation = focusedStations().some((station) =>
+        station.id === id
+      );
+      const width = isFocusedStation ? 3 : 1;
+      const lineDash = isFocusedStation ? [6] : undefined;
       return new Style({
         image: new Circle({
           radius,
@@ -42,7 +48,8 @@ export const subwayStationsAda = (
           }),
           stroke: new Stroke({
             color: "gray",
-            width: 1,
+            lineDash,
+            width,
           }),
         }),
       });

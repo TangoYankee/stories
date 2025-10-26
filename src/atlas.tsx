@@ -1,10 +1,10 @@
 import {
   type Accessor,
   createEffect,
-  createSignal,
   JSX,
   JSXElement,
   onMount,
+  type Setter,
 } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
@@ -16,17 +16,26 @@ import {
   SubwayStationsAda,
   subwayStationsAda,
 } from "./layers/index.ts";
+import { cartesianDistance } from "./utils.tsx";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
+    selectedSubwayStationId: Accessor<string | null>;
+    setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
     isCityCouncilDistrictVisible: Accessor<boolean>;
+    setFocusedStations: Setter<Array<SubwayStationsAda>>;
+    focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ): JSXElement {
-  const { isSubwayStationVisible, isCityCouncilDistrictVisible } = props;
-  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
-    string | null
-  >(null);
+  const {
+    selectedSubwayStationId,
+    setSelectedSubwayStationId,
+    isSubwayStationVisible,
+    isCityCouncilDistrictVisible,
+    setFocusedStations,
+    focusedStations,
+  } = props;
   createEffect(() => {
     const isVisible = isSubwayStationVisible();
     subwayStationsAdaLayer.set("visible", isVisible);
@@ -37,10 +46,16 @@ export function Atlas(
     cityCouncilDistrictLayer.set("visible", isVisible);
   });
 
+  createEffect(() => {
+    selectedSubwayStationId();
+    subwayStationsAdaLayer.changed();
+  });
+
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
     isSubwayStationVisible,
+    focusedStations,
   );
   const cityCouncilDistrictLayer = cityCouncilDistrict();
   onMount(() => {
@@ -59,6 +74,45 @@ export function Atlas(
         zoom: 11,
         extent: [-75, 40.2, -73, 41.2],
       }),
+    });
+
+    map.on("moveend", (e) => {
+      const extent = e.frameState?.extent;
+      if (extent === undefined || extent === null) {
+        throw new Error("moveend: extent undefined");
+      }
+      const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
+      const stationsRandom = features.map((feature) => {
+        const properties = feature.getProperties() as SubwayStationsAda;
+        const midpoint = feature.getFlatMidpoint();
+        return {
+          ...properties,
+          midpoint,
+        };
+      });
+
+      const viewCenter = map.getView().getState().center;
+      const stations = stationsRandom.toSorted((stationA, stationB) => {
+        const midpointStationA = stationA.midpoint;
+        const midpointStationB = stationB.midpoint;
+        const distanceStationA = cartesianDistance({
+          x1: midpointStationA[0],
+          y1: midpointStationA[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+
+        const distanceStationB = cartesianDistance({
+          x1: midpointStationB[0],
+          y1: midpointStationB[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+        return distanceStationA - distanceStationB;
+      });
+
+      subwayStationsAdaLayer.changed();
+      setFocusedStations(stations.slice(0, 7));
     });
 
     map.on("click", async (e) => {
@@ -84,8 +138,6 @@ export function Atlas(
       if (prevStationId !== nextStationId) {
         setSelectedSubwayStationId(nextStationId);
       }
-
-      subwayStationsAdaLayer.changed();
     });
   });
 

@@ -4,14 +4,22 @@ import { css } from "../styled-system/css/index.d.ts";
 import { Atlas } from "./atlas.tsx";
 import { AttributionControl, ZoomControl } from "./controls/index.tsx";
 import { Panel } from "./panel/index.ts";
+import { SubwayStationsAda } from "./layers/subway_stations_ada_layer.ts";
 
 export type Display = "closed" | "half" | "full";
 const App: Component = () => {
+  const [focusedStations, setFocusedStations] = createSignal<
+    Array<SubwayStationsAda>
+  >([]);
   const [isSubwayStationVisible, setIsSubwayStationVisible] = createSignal(
     true,
   );
   const [isCityCouncilDistrictVisible, setIsCityCouncilDistrictVisible] =
     createSignal(true);
+
+  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
+    string | null
+  >(null);
   return (
     <div
       class={css({
@@ -30,10 +38,13 @@ const App: Component = () => {
         })}
       />
       <Panel
+        selectedSubwayStationId={selectedSubwayStationId}
+        setSelectedSubwayStationId={setSelectedSubwayStationId}
         isSubwayStationVisible={isSubwayStationVisible}
         setIsSubwayStationVisible={setIsSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
         setIsCityCouncilDistrictVisible={setIsCityCouncilDistrictVisible}
+        focusedStations={focusedStations}
         class={css({
           gridRow: "3 / 5",
           gridColumn: "2 / 3",
@@ -79,8 +90,12 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        selectedSubwayStationId={selectedSubwayStationId}
+        setSelectedSubwayStationId={setSelectedSubwayStationId}
+        setFocusedStations={setFocusedStations}
         isSubwayStationVisible={isSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
+        focusedStations={focusedStations}
         class={css({
           gridRow: "2 / 5",
           gridColumn: "1 / 6",

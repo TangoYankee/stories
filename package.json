@@ -12,11 +12,13 @@
   "license": "MIT",
   "devDependencies": {
     "@pandacss/dev": "^1.4.2",
+    "@types/lodash.clonedeep": "^4.5.9",
     "solid-devtools": "^0.34.4",
     "vite": "^7.1.10",
     "vite-plugin-solid": "^2.11.9"
   },
   "dependencies": {
+    "lodash.clonedeep": "^4.5.0",
     "ol": "^10.6.1",
     "ol-pmtiles": "^2.0.2",
     "solid-js": "^1.9.9"
