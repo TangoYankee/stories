@@ -34,6 +34,7 @@ export function Panel(
           })}
         >
           <h2>Subway Stations</h2>
+          <img src="icons/7.svg" class={css({ height: "1.5rem" })} />
           <Switch
             isChecked={isSubwayStationVisible}
             onInputChange={() => {
