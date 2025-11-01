@@ -16,6 +16,10 @@ const App: Component = () => {
   );
   const [isCityCouncilDistrictVisible, setIsCityCouncilDistrictVisible] =
     createSignal(true);
+
+  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
+    string | null
+  >(null);
   return (
     <div
       class={css({
@@ -34,6 +38,8 @@ const App: Component = () => {
         })}
       />
       <Panel
+        selectedSubwayStationId={selectedSubwayStationId}
+        setSelectedSubwayStationId={setSelectedSubwayStationId}
         isSubwayStationVisible={isSubwayStationVisible}
         setIsSubwayStationVisible={setIsSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
@@ -84,9 +90,12 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        selectedSubwayStationId={selectedSubwayStationId}
+        setSelectedSubwayStationId={setSelectedSubwayStationId}
         setFocusedStations={setFocusedStations}
         isSubwayStationVisible={isSubwayStationVisible}
         isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
+        focusedStations={focusedStations}
         class={css({
           gridRow: "2 / 5",
           gridColumn: "1 / 6",

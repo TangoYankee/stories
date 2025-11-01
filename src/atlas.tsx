@@ -1,7 +1,6 @@
 import {
   type Accessor,
   createEffect,
-  createSignal,
   JSX,
   JSXElement,
   onMount,
@@ -21,19 +20,22 @@ import { cartesianDistance } from "./utils.tsx";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
+    selectedSubwayStationId: Accessor<string | null>;
+    setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
     isCityCouncilDistrictVisible: Accessor<boolean>;
     setFocusedStations: Setter<Array<SubwayStationsAda>>;
+    focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ): JSXElement {
   const {
+    selectedSubwayStationId,
+    setSelectedSubwayStationId,
     isSubwayStationVisible,
     isCityCouncilDistrictVisible,
     setFocusedStations,
+    focusedStations,
   } = props;
-  const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
-    string | null
-  >(null);
   createEffect(() => {
     const isVisible = isSubwayStationVisible();
     subwayStationsAdaLayer.set("visible", isVisible);
@@ -44,10 +46,16 @@ export function Atlas(
     cityCouncilDistrictLayer.set("visible", isVisible);
   });
 
+  createEffect(() => {
+    selectedSubwayStationId();
+    subwayStationsAdaLayer.changed();
+  });
+
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
     isSubwayStationVisible,
+    focusedStations,
   );
   const cityCouncilDistrictLayer = cityCouncilDistrict();
   onMount(() => {
@@ -103,6 +111,7 @@ export function Atlas(
         return distanceStationA - distanceStationB;
       });
 
+      subwayStationsAdaLayer.changed();
       setFocusedStations(stations.slice(0, 7));
     });
 
@@ -129,8 +138,6 @@ export function Atlas(
       if (prevStationId !== nextStationId) {
         setSelectedSubwayStationId(nextStationId);
       }
-
-      subwayStationsAdaLayer.changed();
     });
   });
 
