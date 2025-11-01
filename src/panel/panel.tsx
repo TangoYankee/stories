@@ -7,6 +7,7 @@ import {
   type Accessor,
   createEffect,
   createMemo,
+  createSelector,
   For,
   Index,
   type Setter,
@@ -61,13 +62,7 @@ export function Panel(
     setIsCityCouncilDistrictVisible,
     focusedStations,
   } = props;
-  const stations = () =>
-    focusedStations().map((station) => {
-      return {
-        ...station,
-        isSelected: selectedSubwayStationId() === station.id,
-      };
-    });
+  const isSelected = createSelector(selectedSubwayStationId);
   return (
     <div id="panel" {...props}>
       <div>
@@ -93,11 +88,8 @@ export function Panel(
             flexDirection: "column",
           })}
         />
-        <For each={stations()}>
+        <For each={focusedStations()}>
           {(station) => {
-            const backgroundColor = station.isSelected
-              ? "sky.300"
-              : "slate.100";
             return (
               <div
                 class={css({
@@ -110,7 +102,9 @@ export function Panel(
                   borderWidth: "medium",
                   borderRadius: "lg",
                   borderColor: "slate.400",
-                  backgroundColor,
+                  backgroundColor: isSelected(station.id)
+                    ? "sky.300"
+                    : "slate.100",
                   _hover: {
                     cursor: "pointer",
                     borderStyle: "dashed",
