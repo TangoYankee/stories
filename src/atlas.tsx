@@ -103,6 +103,44 @@ export function Atlas(
 
     setMapAccess(map);
 
+    map.on("loadend", (e) => {
+      const extent = e.frameState?.extent;
+      if (extent === undefined || extent === null) {
+        throw new Error("moveend: extent undefined");
+      }
+      const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
+      const stationsRandom = features.map((feature) => {
+        const properties = feature.getProperties() as SubwayStationsAda;
+        const midpoint = feature.getFlatMidpoint();
+        return {
+          ...properties,
+          midpoint,
+        };
+      });
+
+      const viewCenter = map.getView().getState().center;
+      const stations = stationsRandom.toSorted((stationA, stationB) => {
+        const midpointStationA = stationA.midpoint;
+        const midpointStationB = stationB.midpoint;
+        const distanceStationA = cartesianDistance({
+          x1: midpointStationA[0],
+          y1: midpointStationA[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+
+        const distanceStationB = cartesianDistance({
+          x1: midpointStationB[0],
+          y1: midpointStationB[1],
+          x2: viewCenter[0],
+          y2: viewCenter[1],
+        });
+        return distanceStationA - distanceStationB;
+      });
+
+      setStationsInExtent(stations);
+    });
+
     map.on("moveend", (e) => {
       const extent = e.frameState?.extent;
       if (extent === undefined || extent === null) {
