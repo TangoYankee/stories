@@ -68,53 +68,86 @@ export function Panel(
           class={css({
             display: "flex",
             width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: "column",
+            padding: "1",
           })}
         >
-          <h2>Subway Stations</h2>
-          <select
-            onInput={(e) => {
-              const { value } = e.currentTarget;
-              setSelectedAccessibilitySnapshot(value);
-            }}
+          <h1
+            class={css({
+              fontWeight: "bold",
+              fontSize: "large",
+            })}
           >
-            <option
-              value="2025-10-15"
-              selected={isSnapshotSelected("2025-10-15")}
+            Subway Stations
+          </h1>
+          <div
+            class={css({
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              alignItems: "center",
+            })}
+          >
+            <label for="snapshot-selector">Snapshot in time</label>
+            <select
+              id="snapshot-selector"
+              onInput={(e) => {
+                const { value } = e.currentTarget;
+                setSelectedAccessibilitySnapshot(value);
+              }}
+              class={css({
+                borderStyle: "solid",
+                borderWidth: "thin",
+                borderRadius: "md"
+              })}
             >
-              15 Oct 2025
-            </option>
-            <option
-              value="2025-02-18"
-              selected={isSnapshotSelected("2025-02-18")}
-            >
-              18 Feb 2025
-            </option>
-            <option
-              value="2024-04-17"
-              selected={isSnapshotSelected("2024-04-17")}
-            >
-              17 Apr 2024
-            </option>
-            <option
-              value="2024-01-12"
-              selected={isSnapshotSelected("2024-01-12")}
-            >
-              12 Jan 2024
-            </option>
-            <option
-              value="2023-10-24"
-              selected={isSnapshotSelected("2023-10-24")}
-            >
-              24 Oct 2023
-            </option>
-          </select>
-          <Switch
-            isChecked={filterToUpgraded}
-            onInputChange={() =>
-              setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
-          />
+              <option
+                value="2025-10-15"
+                selected={isSnapshotSelected("2025-10-15")}
+              >
+                15 Oct 2025
+              </option>
+              <option
+                value="2025-02-18"
+                selected={isSnapshotSelected("2025-02-18")}
+              >
+                18 Feb 2025
+              </option>
+              <option
+                value="2024-04-17"
+                selected={isSnapshotSelected("2024-04-17")}
+              >
+                17 Apr 2024
+              </option>
+              <option
+                value="2024-01-12"
+                selected={isSnapshotSelected("2024-01-12")}
+              >
+                12 Jan 2024
+              </option>
+              <option
+                value="2023-10-24"
+                selected={isSnapshotSelected("2023-10-24")}
+              >
+                24 Oct 2023
+              </option>
+            </select>
+          </div>
+          <div
+            class={css({
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              alignItems: "center",
+            })}
+          >
+            <p>Show only stations upgraded at snapshot</p>
+            <Switch
+              isChecked={filterToUpgraded}
+              onInputChange={() =>
+                setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
+            />
+          </div>
         </div>
         <For each={focusedStations()}>
           {(station) => {
