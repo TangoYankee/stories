@@ -21,7 +21,7 @@ import { cartesianDistance } from "./utils.tsx";
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
     filterToUpgraded: Accessor<boolean>;
-    selectedAccessibilitySnapshot: Accessor<Date>;
+    selectedAccessibilitySnapshot: Accessor<string>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     setFocusedStations: Setter<Array<SubwayStationsAda>>;
@@ -51,13 +51,11 @@ export function Atlas(
   });
 
   createEffect(() => {
-    const shouldFilter = filterToUpgraded();
     const snapshot = selectedAccessibilitySnapshot();
-    const stations = shouldFilter
+    const stations = filterToUpgraded()
       ? stationsInExtent().filter((station) => {
         const { fully_accessible } = station;
-        return fully_accessible !== null &&
-          fully_accessible === snapshot.toISOString().split("T")[0];
+        return fully_accessible === snapshot;
       })
       : stationsInExtent();
     setFocusedStations(stations.slice(0, 7));

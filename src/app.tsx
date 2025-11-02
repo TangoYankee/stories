@@ -17,7 +17,7 @@ const App: Component = () => {
   >(null);
 
   const [selectedAccessibilitySnapshot, setSelectedAccessibilitySnapshot] =
-    createSignal(new Date("2025-oct-15"));
+    createSignal("2025-10-15");
 
   const [filterToUpgraded, setFilterToUpgraded] = createSignal(false);
   return (

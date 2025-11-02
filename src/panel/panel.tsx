@@ -43,8 +43,8 @@ export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
     filterToUpgraded: Accessor<boolean>;
     setFilterToUpgraded: Setter<boolean>;
-    selectedAccessibilitySnapshot: Accessor<Date>;
-    setSelectedAccessibilitySnapshot: Setter<Date>;
+    selectedAccessibilitySnapshot: Accessor<string>;
+    setSelectedAccessibilitySnapshot: Setter<string>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
@@ -75,38 +75,37 @@ export function Panel(
           <h2>Subway Stations</h2>
           <select
             onInput={(e) => {
-              const selection = e.currentTarget.value;
-              const date = new Date(selection);
-              setSelectedAccessibilitySnapshot(date);
+              const { value } = e.currentTarget;
+              setSelectedAccessibilitySnapshot(value);
             }}
           >
             <option
-              value="2025-oct-15"
-              selected={isSnapshotSelected(new Date("2025-oct-15"))}
+              value="2025-10-15"
+              selected={isSnapshotSelected("2025-10-15")}
             >
               15 Oct 2025
             </option>
             <option
-              value="2025-feb-18"
-              selected={isSnapshotSelected(new Date("2025-feb-18"))}
+              value="2025-02-18"
+              selected={isSnapshotSelected("2025-02-18")}
             >
               18 Feb 2025
             </option>
             <option
-              value="2024-apr-17"
-              selected={isSnapshotSelected(new Date("2024-apr-17"))}
+              value="2024-04-17"
+              selected={isSnapshotSelected("2024-04-17")}
             >
               17 Apr 2024
             </option>
             <option
-              value="2024-jan-12"
-              selected={isSnapshotSelected(new Date("2024-jan-12"))}
+              value="2024-01-12"
+              selected={isSnapshotSelected("2024-01-12")}
             >
               12 Jan 2024
             </option>
             <option
-              value="2023-oct-24"
-              selected={isSnapshotSelected(new Date("2023-oct-24"))}
+              value="2023-10-24"
+              selected={isSnapshotSelected("2023-10-24")}
             >
               24 Oct 2023
             </option>
@@ -124,12 +123,11 @@ export function Panel(
               partially_accessible,
             } = station;
 
-            const fullyAccessible = fully_accessible !== null
-              ? new Date(fully_accessible)
-              : null;
-            const partiallyAccessible = partially_accessible !== null
-              ? new Date(partially_accessible)
-              : null;
+            const snapshot = new Date(selectedAccessibilitySnapshot());
+            const isFullyAccessible = fully_accessible !== null &&
+              new Date(fully_accessible) <= snapshot;
+            const isPartiallyAccessible = partially_accessible !== null &&
+              new Date(partially_accessible) <= snapshot;
 
             return (
               <div
@@ -167,16 +165,14 @@ export function Panel(
                       alignItems: "center",
                     })}
                   >
-                    {fullyAccessible !== null &&
-                        fullyAccessible <= selectedAccessibilitySnapshot()
+                    {isFullyAccessible
                       ? (
                         <>
                           <p>Fully accessible</p>
                           <CircleIcon level="positive" size="md" />
                         </>
                       )
-                      : partiallyAccessible !== null &&
-                          partiallyAccessible <= selectedAccessibilitySnapshot()
+                      : isPartiallyAccessible
                       ? (
                         <>
                           <p>Partially accessible</p>
