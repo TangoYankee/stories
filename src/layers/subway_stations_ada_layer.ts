@@ -27,8 +27,6 @@ export const subwayStationsAda = (
     style: (feature, resolution) => {
       const { fully_accessible, partially_accessible, id } = feature
         .getProperties() as SubwayStationsAda;
-      console.log("fully", fully_accessible);
-      console.log("snapshot", selectedAccessibilitySnapshot());
       const snapshot = new Date(selectedAccessibilitySnapshot());
       const fullyAccessible = fully_accessible !== null
         ? new Date(fully_accessible)

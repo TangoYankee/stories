@@ -36,6 +36,7 @@ export function Atlas(
     setFocusedStations,
     focusedStations,
   } = props;
+  const [mapAccess, setMapAccess] = createSignal<Map | null>(null);
   const [stationsInExtent, setStationsInExtent] = createSignal<
     Array<SubwayStationsAda>
   >([]);
@@ -62,6 +63,20 @@ export function Atlas(
     subwayStationsAdaLayer.changed();
   });
 
+  createEffect(() => {
+    const map = mapAccess();
+    const shouldFilter = filterToUpgraded();
+    if (map === null) return;
+    if (shouldFilter) {
+      const nextView = new View({
+        center: [-74, 40.7],
+        zoom: 11,
+        extent: [-75, 40.2, -73, 41.2],
+      });
+      map.setView(nextView);
+    }
+  });
+
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
@@ -85,6 +100,8 @@ export function Atlas(
         extent: [-75, 40.2, -73, 41.2],
       }),
     });
+
+    setMapAccess(map);
 
     map.on("moveend", (e) => {
       const extent = e.frameState?.extent;

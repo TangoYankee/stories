@@ -98,7 +98,7 @@ export function Panel(
               class={css({
                 borderStyle: "solid",
                 borderWidth: "thin",
-                borderRadius: "md"
+                borderRadius: "md",
               })}
             >
               <option
