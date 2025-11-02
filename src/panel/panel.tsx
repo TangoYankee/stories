@@ -49,11 +49,13 @@ export function Panel(
 ) {
   const {
     selectedAccessibilitySnapshot,
+    setSelectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
     focusedStations,
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
+  const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot)
   return (
     <div id="panel" {...props}>
       <div>
@@ -66,6 +68,19 @@ export function Panel(
           })}
         >
           <h2>Subway Stations</h2>
+          <select
+            onInput={(e) => {
+              const selection = e.currentTarget.value;
+              const date = new Date(selection);
+              setSelectedAccessibilitySnapshot(date);
+            }}
+          >
+            <option value={"2025-oct-15"} selected={isSnapshotSelected(new Date("2025-oct-15"))}>15 Oct 2025</option>
+            <option value={"2025-feb-18"} selected={isSnapshotSelected(new Date("2025-feb-18"))}>18 Feb 2025</option>
+            <option value={"2024-apr-17"} selected={isSnapshotSelected(new Date("2024-apr-17"))}>17 Apr 2024</option>
+            <option value={"2024-jan-12"} selected={isSnapshotSelected(new Date("2024-jan-12"))}>12 Jan 2024</option>
+            <option value={"2023-oct-24"} selected={isSnapshotSelected(new Date("2023-oct-24"))}>24 Oct 2023</option>
+          </select>
         </div>
         <For each={focusedStations()}>
           {(station) => {

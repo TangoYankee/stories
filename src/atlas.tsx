@@ -39,6 +39,11 @@ export function Atlas(
     subwayStationsAdaLayer.changed();
   });
 
+  createEffect(() => {
+    selectedAccessibilitySnapshot();
+    subwayStationsAdaLayer.changed();
+  })
+
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
