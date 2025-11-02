@@ -18,6 +18,8 @@ const App: Component = () => {
 
   const [selectedAccessibilitySnapshot, setSelectedAccessibilitySnapshot] =
     createSignal(new Date("2025-oct-15"));
+
+  const [filterToUpgraded, setFilterToUpgraded] = createSignal(false);
   return (
     <div
       class={css({
@@ -36,6 +38,8 @@ const App: Component = () => {
         })}
       />
       <Panel
+        filterToUpgraded={filterToUpgraded}
+        setFilterToUpgraded={setFilterToUpgraded}
         selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
         setSelectedAccessibilitySnapshot={setSelectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
@@ -86,6 +90,7 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        filterToUpgraded={filterToUpgraded}
         selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
