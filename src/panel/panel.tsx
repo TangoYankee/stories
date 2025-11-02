@@ -1,16 +1,17 @@
 import { JSX } from "solid-js/jsx-runtime";
-import { CircleIcon, Legend } from "../legend/index.ts";
+import { CircleIcon } from "../legend/index.ts";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../../styled-system/css/index.d.ts";
-import { Switch } from "../switch/switch.tsx";
 import {
   type Accessor,
   createSelector,
+  createSignal,
   For,
   Index,
   type Setter,
 } from "solid-js";
 import { SubwayStationsAda } from "../layers/subway_stations_ada_layer.ts";
+import { Switch } from "../switch/switch.tsx";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -41,65 +42,136 @@ const routeIconFileName: Record<string, string> = {
 
 export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
-    selectedAccessibilitySnapshot: Accessor<Date>;
+    filterToUpgraded: Accessor<boolean>;
+    setFilterToUpgraded: Setter<boolean>;
+    selectedAccessibilitySnapshot: Accessor<string>;
+    setSelectedAccessibilitySnapshot: Setter<string>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
-    isSubwayStationVisible: Accessor<boolean>;
-    setIsSubwayStationVisible: Setter<boolean>;
-    isCityCouncilDistrictVisible: Accessor<boolean>;
-    setIsCityCouncilDistrictVisible: Setter<boolean>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ) {
   const {
+    filterToUpgraded,
+    setFilterToUpgraded,
     selectedAccessibilitySnapshot,
+    setSelectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
-    isSubwayStationVisible,
-    setIsSubwayStationVisible,
-    isCityCouncilDistrictVisible,
-    setIsCityCouncilDistrictVisible,
     focusedStations,
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
+  const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
+  const [seeFewerStations, setSeeFewerStations] = createSignal(true);
+  const stationsView = () =>
+    seeFewerStations() ? focusedStations().slice(0, 1) : focusedStations();
   return (
     <div id="panel" {...props}>
-      <div>
+      <div
+        class={css({
+          display: "flex",
+          width: "100%",
+          flexDirection: "column",
+          padding: "1",
+        })}
+      >
+        <h1
+          class={css({
+            fontWeight: "bold",
+            fontSize: "large",
+          })}
+        >
+          Subway Stations
+        </h1>
         <div
           class={css({
             display: "flex",
-            width: "100%",
             justifyContent: "space-between",
+            flexWrap: "wrap",
             alignItems: "center",
           })}
         >
-          <h2>Subway Stations</h2>
-          <Switch
-            isChecked={isSubwayStationVisible}
-            onInputChange={() => {
-              setIsSubwayStationVisible((isVisible) => !isVisible);
+          <label for="snapshot-selector">Snapshot in time</label>
+          <select
+            id="snapshot-selector"
+            onInput={(e) => {
+              const { value } = e.currentTarget;
+              setSelectedAccessibilitySnapshot(value);
             }}
-          />
+            class={css({
+              borderStyle: "solid",
+              borderWidth: "thin",
+              borderRadius: "lg",
+              borderColor: "zinc.500",
+            })}
+          >
+            <option
+              value="2025-10-15"
+              selected={isSnapshotSelected("2025-10-15")}
+            >
+              15 Oct 2025
+            </option>
+            <option
+              value="2025-02-18"
+              selected={isSnapshotSelected("2025-02-18")}
+            >
+              18 Feb 2025
+            </option>
+            <option
+              value="2024-04-17"
+              selected={isSnapshotSelected("2024-04-17")}
+            >
+              17 Apr 2024
+            </option>
+            <option
+              value="2024-01-12"
+              selected={isSnapshotSelected("2024-01-12")}
+            >
+              12 Jan 2024
+            </option>
+            <option
+              value="2023-10-24"
+              selected={isSnapshotSelected("2023-10-24")}
+            >
+              24 Oct 2023
+            </option>
+          </select>
         </div>
-        <Legend
+        <div
           class={css({
             display: "flex",
-            flexDirection: "column",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            alignItems: "center",
           })}
-        />
-        <For each={focusedStations()}>
+        >
+          <p>Show only stations upgraded at snapshot</p>
+          <Switch
+            isChecked={filterToUpgraded}
+            onInputChange={() =>
+              setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
+          />
+        </div>
+      </div>
+      <div
+        class={css({
+          maxHeight: "70dvh",
+          overflow: "auto",
+          scrollbarWidth: "none",
+        })}
+      >
+        <For each={stationsView()}>
           {(station) => {
             const {
               fully_accessible,
               partially_accessible,
             } = station;
 
-            const fullyAccessible = fully_accessible !== null
-              ? new Date(fully_accessible)
-              : null;
-            const partiallyAccessible = partially_accessible !== null
-              ? new Date(partially_accessible)
-              : null;
+            const snapshot = new Date(selectedAccessibilitySnapshot());
+            const isFullyAccessible = fully_accessible !== null &&
+              new Date(fully_accessible) <= snapshot;
+            const isPartiallyAccessible = partially_accessible !== null &&
+              new Date(partially_accessible) <= snapshot;
 
             return (
               <div
@@ -112,7 +184,7 @@ export function Panel(
                   border: "solid",
                   borderWidth: "medium",
                   borderRadius: "lg",
-                  borderColor: "slate.400",
+                  borderColor: "zinc.500",
                   backgroundColor: isSelected(station.id)
                     ? "sky.300"
                     : "slate.100",
@@ -137,16 +209,14 @@ export function Panel(
                       alignItems: "center",
                     })}
                   >
-                    {fullyAccessible !== null &&
-                        fullyAccessible <= selectedAccessibilitySnapshot()
+                    {isFullyAccessible
                       ? (
                         <>
                           <p>Fully accessible</p>
                           <CircleIcon level="positive" size="md" />
                         </>
                       )
-                      : partiallyAccessible !== null &&
-                          partiallyAccessible <= selectedAccessibilitySnapshot()
+                      : isPartiallyAccessible
                       ? (
                         <>
                           <p>Partially accessible</p>
@@ -185,22 +255,28 @@ export function Panel(
           }}
         </For>
       </div>
-      <div
+      <button
+        type="submit"
         class={css({
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
+          border: "solid",
+          borderWidth: "medium",
+          borderRadius: "lg",
+          borderColor: "amber.500",
+          padding: "0.5",
+          width: "10rem",
+          backgroundColor: "zinc.50",
+          fontWeight: "bolder",
+          color: "sky.700",
+          alignSelf: "end",
+          _hover: {
+            cursor: "pointer",
+            backgroundColor: "zinc.200",
+          },
         })}
+        onClick={() => setSeeFewerStations((state) => !state)}
       >
-        <h2>City Council Districts</h2>
-        <Switch
-          isChecked={isCityCouncilDistrictVisible}
-          onInputChange={() => {
-            setIsCityCouncilDistrictVisible((isVisible) => !isVisible);
-          }}
-        />
-      </div>
+        {`See ${seeFewerStations() ? "more" : "fewer"} stations`}
+      </button>
     </div>
   );
 }

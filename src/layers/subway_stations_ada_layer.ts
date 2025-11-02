@@ -15,19 +15,19 @@ export interface SubwayStationsAda {
 
 export const subwayStationsAda = (
   selectedId: Accessor<string | null>,
-  isVisible: Accessor<boolean>,
   focusedStations: Accessor<Array<SubwayStationsAda>>,
-  selectedAccessibilitySnapshot: Accessor<Date>,
+  selectedAccessibilitySnapshot: Accessor<string>,
+  filterToUpgraded: Accessor<boolean>,
 ) =>
   new VectorTile({
     source: new PMTilesVectorSource({
       url: `${FILE_BUCKET}/ada-subway-stations.pmtiles`,
-      attributions: `<a href="https://data.ny.gov/">NYS open data</a>; `,
+      attributions: `<a href="https://data.ny.gov/">NYS</a>; `,
     }),
-    visible: isVisible(),
     style: (feature, resolution) => {
       const { fully_accessible, partially_accessible, id } = feature
         .getProperties() as SubwayStationsAda;
+      const snapshot = new Date(selectedAccessibilitySnapshot());
       const fullyAccessible = fully_accessible !== null
         ? new Date(fully_accessible)
         : null;
@@ -38,14 +38,18 @@ export const subwayStationsAda = (
       const fillColor = id === selectedId()
         ? "rgba(0, 0, 255, 1)"
         : fullyAccessible !== null &&
-            fullyAccessible <= selectedAccessibilitySnapshot()
+            fullyAccessible <= snapshot
         ? "rgba(153,213,148,0.9)"
         : partiallyAccessible !== null &&
-            partiallyAccessible <= selectedAccessibilitySnapshot()
+            partiallyAccessible <= snapshot
         ? "rgba(255,255,191,0.9)"
         : "rgba(252,141,89,0.9)";
 
-      const radius = 10 / Math.log(resolution);
+      const isUpgradedStation = fully_accessible ===
+        selectedAccessibilitySnapshot();
+      const radius = filterToUpgraded() && !isUpgradedStation
+        ? 0
+        : 10 / Math.log(resolution);
       const isFocusedStation = focusedStations().some((station) =>
         station.id === id
       );

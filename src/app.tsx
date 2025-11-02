@@ -11,25 +11,22 @@ const App: Component = () => {
   const [focusedStations, setFocusedStations] = createSignal<
     Array<SubwayStationsAda>
   >([]);
-  const [isSubwayStationVisible, setIsSubwayStationVisible] = createSignal(
-    true,
-  );
-  const [isCityCouncilDistrictVisible, setIsCityCouncilDistrictVisible] =
-    createSignal(true);
 
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
   >(null);
 
-  const [selectedAccessibilitySnapshot, _setSelectedAccessibilitySnapshot] =
-    createSignal(new Date("2025-oct-15"));
+  const [selectedAccessibilitySnapshot, setSelectedAccessibilitySnapshot] =
+    createSignal("2025-10-15");
+
+  const [filterToUpgraded, setFilterToUpgraded] = createSignal(false);
   return (
     <div
       class={css({
         height: "100%",
         width: "100%",
         display: "grid",
-        gridTemplateRows: "3dvh 1dvh 93dvh 3dvh",
+        gridTemplateRows: "0dvh 1dvh 96dvh 3dvh",
         gridTemplateColumns: "1dvw 20dvw 1dvw 77dvw 1dvw",
       })}
     >
@@ -41,13 +38,12 @@ const App: Component = () => {
         })}
       />
       <Panel
+        filterToUpgraded={filterToUpgraded}
+        setFilterToUpgraded={setFilterToUpgraded}
         selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
+        setSelectedAccessibilitySnapshot={setSelectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
-        isSubwayStationVisible={isSubwayStationVisible}
-        setIsSubwayStationVisible={setIsSubwayStationVisible}
-        isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
-        setIsCityCouncilDistrictVisible={setIsCityCouncilDistrictVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "3 / 5",
@@ -58,6 +54,7 @@ const App: Component = () => {
           },
           height: "fit-content",
           width: "100%",
+          maxHeight: "100%",
           display: "flex",
           flexDirection: "column",
           backgroundColor: "slate.50/90",
@@ -94,12 +91,11 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        filterToUpgraded={filterToUpgraded}
         selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         setFocusedStations={setFocusedStations}
-        isSubwayStationVisible={isSubwayStationVisible}
-        isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "2 / 5",

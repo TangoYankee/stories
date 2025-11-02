@@ -35,7 +35,7 @@ export function Switch(
         aria-label="Subway Stations Switch"
         class={css({
           _peerChecked: {
-            backgroundColor: "sky.500",
+            backgroundColor: "sky.700",
           },
           height: "inherit",
           width: "inherit",
