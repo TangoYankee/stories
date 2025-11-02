@@ -54,6 +54,7 @@ const App: Component = () => {
           },
           height: "fit-content",
           width: "100%",
+          maxHeight: "100%",
           display: "flex",
           flexDirection: "column",
           backgroundColor: "slate.50/90",

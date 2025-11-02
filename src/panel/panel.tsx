@@ -5,6 +5,7 @@ import { css } from "../../styled-system/css/index.d.ts";
 import {
   type Accessor,
   createSelector,
+  createSignal,
   For,
   Index,
   type Setter,
@@ -61,95 +62,105 @@ export function Panel(
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
   const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
+  const [seeFewerStations, setSeeFewerStations] = createSignal(true);
+  const stationsView = () =>
+    seeFewerStations() ? focusedStations().slice(0, 1) : focusedStations();
   return (
     <div id="panel" {...props}>
-      <div>
+      <div
+        class={css({
+          display: "flex",
+          width: "100%",
+          flexDirection: "column",
+          padding: "1",
+        })}
+      >
+        <h1
+          class={css({
+            fontWeight: "bold",
+            fontSize: "large",
+          })}
+        >
+          Subway Stations
+        </h1>
         <div
           class={css({
             display: "flex",
-            width: "100%",
-            flexDirection: "column",
-            padding: "1",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            alignItems: "center",
           })}
         >
-          <h1
+          <label for="snapshot-selector">Snapshot in time</label>
+          <select
+            id="snapshot-selector"
+            onInput={(e) => {
+              const { value } = e.currentTarget;
+              setSelectedAccessibilitySnapshot(value);
+            }}
             class={css({
-              fontWeight: "bold",
-              fontSize: "large",
+              borderStyle: "solid",
+              borderWidth: "thin",
+              borderRadius: "lg",
+              borderColor: "zinc.500",
             })}
           >
-            Subway Stations
-          </h1>
-          <div
-            class={css({
-              display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              alignItems: "center",
-            })}
-          >
-            <label for="snapshot-selector">Snapshot in time</label>
-            <select
-              id="snapshot-selector"
-              onInput={(e) => {
-                const { value } = e.currentTarget;
-                setSelectedAccessibilitySnapshot(value);
-              }}
-              class={css({
-                borderStyle: "solid",
-                borderWidth: "thin",
-                borderRadius: "md",
-              })}
+            <option
+              value="2025-10-15"
+              selected={isSnapshotSelected("2025-10-15")}
             >
-              <option
-                value="2025-10-15"
-                selected={isSnapshotSelected("2025-10-15")}
-              >
-                15 Oct 2025
-              </option>
-              <option
-                value="2025-02-18"
-                selected={isSnapshotSelected("2025-02-18")}
-              >
-                18 Feb 2025
-              </option>
-              <option
-                value="2024-04-17"
-                selected={isSnapshotSelected("2024-04-17")}
-              >
-                17 Apr 2024
-              </option>
-              <option
-                value="2024-01-12"
-                selected={isSnapshotSelected("2024-01-12")}
-              >
-                12 Jan 2024
-              </option>
-              <option
-                value="2023-10-24"
-                selected={isSnapshotSelected("2023-10-24")}
-              >
-                24 Oct 2023
-              </option>
-            </select>
-          </div>
-          <div
-            class={css({
-              display: "flex",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              alignItems: "center",
-            })}
-          >
-            <p>Show only stations upgraded at snapshot</p>
-            <Switch
-              isChecked={filterToUpgraded}
-              onInputChange={() =>
-                setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
-            />
-          </div>
+              15 Oct 2025
+            </option>
+            <option
+              value="2025-02-18"
+              selected={isSnapshotSelected("2025-02-18")}
+            >
+              18 Feb 2025
+            </option>
+            <option
+              value="2024-04-17"
+              selected={isSnapshotSelected("2024-04-17")}
+            >
+              17 Apr 2024
+            </option>
+            <option
+              value="2024-01-12"
+              selected={isSnapshotSelected("2024-01-12")}
+            >
+              12 Jan 2024
+            </option>
+            <option
+              value="2023-10-24"
+              selected={isSnapshotSelected("2023-10-24")}
+            >
+              24 Oct 2023
+            </option>
+          </select>
         </div>
-        <For each={focusedStations()}>
+        <div
+          class={css({
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            alignItems: "center",
+          })}
+        >
+          <p>Show only stations upgraded at snapshot</p>
+          <Switch
+            isChecked={filterToUpgraded}
+            onInputChange={() =>
+              setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
+          />
+        </div>
+      </div>
+      <div
+        class={css({
+          maxHeight: "70dvh",
+          overflow: "auto",
+          scrollbarWidth: "none",
+        })}
+      >
+        <For each={stationsView()}>
           {(station) => {
             const {
               fully_accessible,
@@ -173,7 +184,7 @@ export function Panel(
                   border: "solid",
                   borderWidth: "medium",
                   borderRadius: "lg",
-                  borderColor: "slate.400",
+                  borderColor: "zinc.500",
                   backgroundColor: isSelected(station.id)
                     ? "sky.300"
                     : "slate.100",
@@ -244,6 +255,28 @@ export function Panel(
           }}
         </For>
       </div>
+      <button
+        type="submit"
+        class={css({
+          border: "solid",
+          borderWidth: "medium",
+          borderRadius: "lg",
+          borderColor: "amber.500",
+          padding: "0.5",
+          width: "10rem",
+          backgroundColor: "zinc.50",
+          fontWeight: "bolder",
+          color: "sky.700",
+          alignSelf: "end",
+          _hover: {
+            cursor: "pointer",
+            backgroundColor: "zinc.200",
+          },
+        })}
+        onClick={() => setSeeFewerStations((state) => !state)}
+      >
+        {`See ${seeFewerStations() ? "more" : "fewer"} stations`}
+      </button>
     </div>
   );
 }
