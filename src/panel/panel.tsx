@@ -266,6 +266,7 @@ export function Panel(
           width: "10rem",
           backgroundColor: "zinc.50",
           fontWeight: "bolder",
+          lineHeight: "1rem",
           color: "sky.700",
           alignSelf: "end",
           _hover: {

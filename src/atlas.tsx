@@ -13,6 +13,7 @@ import { useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls/index.tsx";
 import {
   nycBasemap,
+  subwayLine,
   SubwayStationsAda,
   subwayStationsAda,
 } from "./layers/index.ts";
@@ -84,6 +85,7 @@ export function Atlas(
     selectedAccessibilitySnapshot,
     filterToUpgraded,
   );
+  const subwayLinesLayer = subwayLine();
   onMount(() => {
     useGeographic();
 
@@ -92,6 +94,7 @@ export function Atlas(
       layers: [
         nycBasemapLayer,
         subwayStationsAdaLayer,
+        subwayLinesLayer,
       ],
       controls: [attribution(), zoom()],
       view: new View({
