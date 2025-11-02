@@ -11,9 +11,6 @@ const App: Component = () => {
   const [focusedStations, setFocusedStations] = createSignal<
     Array<SubwayStationsAda>
   >([]);
-  const [isSubwayStationVisible, setIsSubwayStationVisible] = createSignal(
-    true,
-  );
 
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
@@ -43,8 +40,6 @@ const App: Component = () => {
         setSelectedAccessibilitySnapshot={setSelectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
-        isSubwayStationVisible={isSubwayStationVisible}
-        setIsSubwayStationVisible={setIsSubwayStationVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "3 / 5",
@@ -95,7 +90,6 @@ const App: Component = () => {
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         setFocusedStations={setFocusedStations}
-        isSubwayStationVisible={isSubwayStationVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "2 / 5",

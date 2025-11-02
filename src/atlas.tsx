@@ -22,7 +22,6 @@ export function Atlas(
     selectedAccessibilitySnapshot: Accessor<Date>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
-    isSubwayStationVisible: Accessor<boolean>;
     setFocusedStations: Setter<Array<SubwayStationsAda>>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
@@ -31,14 +30,9 @@ export function Atlas(
     selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
-    isSubwayStationVisible,
     setFocusedStations,
     focusedStations,
   } = props;
-  createEffect(() => {
-    const isVisible = isSubwayStationVisible();
-    subwayStationsAdaLayer.set("visible", isVisible);
-  });
 
   createEffect(() => {
     selectedSubwayStationId();
@@ -48,7 +42,6 @@ export function Atlas(
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
-    isSubwayStationVisible,
     focusedStations,
     selectedAccessibilitySnapshot,
   );

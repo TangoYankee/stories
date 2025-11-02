@@ -15,7 +15,6 @@ export interface SubwayStationsAda {
 
 export const subwayStationsAda = (
   selectedId: Accessor<string | null>,
-  isVisible: Accessor<boolean>,
   focusedStations: Accessor<Array<SubwayStationsAda>>,
   selectedAccessibilitySnapshot: Accessor<Date>,
 ) =>
@@ -24,7 +23,6 @@ export const subwayStationsAda = (
       url: `${FILE_BUCKET}/ada-subway-stations.pmtiles`,
       attributions: `<a href="https://data.ny.gov/">NYS open data</a>; `,
     }),
-    visible: isVisible(),
     style: (feature, resolution) => {
       const { fully_accessible, partially_accessible, id } = feature
         .getProperties() as SubwayStationsAda;

@@ -1,8 +1,7 @@
 import { JSX } from "solid-js/jsx-runtime";
-import { CircleIcon, Legend } from "../legend/index.ts";
+import { CircleIcon } from "../legend/index.ts";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../../styled-system/css/index.d.ts";
-import { Switch } from "../switch/switch.tsx";
 import {
   type Accessor,
   createSelector,
@@ -45,8 +44,6 @@ export function Panel(
     setSelectedAccessibilitySnapshot: Setter<Date>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
-    isSubwayStationVisible: Accessor<boolean>;
-    setIsSubwayStationVisible: Setter<boolean>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ) {
@@ -54,8 +51,6 @@ export function Panel(
     selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
-    isSubwayStationVisible,
-    setIsSubwayStationVisible,
     focusedStations,
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
@@ -71,12 +66,6 @@ export function Panel(
           })}
         >
           <h2>Subway Stations</h2>
-          <Switch
-            isChecked={isSubwayStationVisible}
-            onInputChange={() => {
-              setIsSubwayStationVisible((isVisible) => !isVisible);
-            }}
-          />
         </div>
         <For each={focusedStations()}>
           {(station) => {
