@@ -27,7 +27,7 @@ const App: Component = () => {
         height: "100%",
         width: "100%",
         display: "grid",
-        gridTemplateRows: "3dvh 1dvh 93dvh 3dvh",
+        gridTemplateRows: "0dvh 1dvh 96dvh 3dvh",
         gridTemplateColumns: "1dvw 20dvw 1dvw 77dvw 1dvw",
       })}
     >
