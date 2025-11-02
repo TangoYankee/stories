@@ -20,6 +20,9 @@ const App: Component = () => {
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
   >(null);
+
+  const [selectedAccessibilitySnapshot, _setSelectedAccessibilitySnapshot] =
+    createSignal(new Date("2025-oct-15"));
   return (
     <div
       class={css({
@@ -38,6 +41,7 @@ const App: Component = () => {
         })}
       />
       <Panel
+        selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         isSubwayStationVisible={isSubwayStationVisible}
@@ -90,6 +94,7 @@ const App: Component = () => {
         })}
       />
       <Atlas
+        selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         setFocusedStations={setFocusedStations}

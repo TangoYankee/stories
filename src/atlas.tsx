@@ -20,6 +20,7 @@ import { cartesianDistance } from "./utils.tsx";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
+    selectedAccessibilitySnapshot: Accessor<Date>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
@@ -29,6 +30,7 @@ export function Atlas(
   },
 ): JSXElement {
   const {
+    selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
     isSubwayStationVisible,
@@ -56,6 +58,7 @@ export function Atlas(
     selectedSubwayStationId,
     isSubwayStationVisible,
     focusedStations,
+    selectedAccessibilitySnapshot,
   );
   const cityCouncilDistrictLayer = cityCouncilDistrict();
   onMount(() => {

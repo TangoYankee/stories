@@ -8,13 +8,16 @@ export interface SubwayStationsAda {
   id: string;
   stop_name: string;
   daytime_routes: string;
-  ada: string;
+  fully_accessible: string | null;
+  partially_accessible: string | null;
+  not_accessible: string | null;
 }
 
 export const subwayStationsAda = (
   selectedId: Accessor<string | null>,
   isVisible: Accessor<boolean>,
   focusedStations: Accessor<Array<SubwayStationsAda>>,
+  selectedAccessibilitySnapshot: Accessor<Date>,
 ) =>
   new VectorTile({
     source: new PMTilesVectorSource({
@@ -23,14 +26,22 @@ export const subwayStationsAda = (
     }),
     visible: isVisible(),
     style: (feature, resolution) => {
-      const { ada, id } = feature
+      const { fully_accessible, partially_accessible, id } = feature
         .getProperties() as SubwayStationsAda;
+      const fullyAccessible = fully_accessible !== null
+        ? new Date(fully_accessible)
+        : null;
+      const partiallyAccessible = partially_accessible !== null
+        ? new Date(partially_accessible)
+        : null;
       // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
       const fillColor = id === selectedId()
         ? "rgba(0, 0, 255, 1)"
-        : ada === "1"
+        : fullyAccessible !== null &&
+            fullyAccessible <= selectedAccessibilitySnapshot()
         ? "rgba(153,213,148,0.9)"
-        : ada === "2"
+        : partiallyAccessible !== null &&
+            partiallyAccessible <= selectedAccessibilitySnapshot()
         ? "rgba(255,255,191,0.9)"
         : "rgba(252,141,89,0.9)";
 

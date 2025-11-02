@@ -5,15 +5,12 @@ import { css } from "../../styled-system/css/index.d.ts";
 import { Switch } from "../switch/switch.tsx";
 import {
   type Accessor,
-  createEffect,
-  createMemo,
   createSelector,
   For,
   Index,
   type Setter,
 } from "solid-js";
 import { SubwayStationsAda } from "../layers/subway_stations_ada_layer.ts";
-import clonedeep from "lodash.clonedeep";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -44,6 +41,7 @@ const routeIconFileName: Record<string, string> = {
 
 export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
+    selectedAccessibilitySnapshot: Accessor<Date>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
@@ -54,6 +52,7 @@ export function Panel(
   },
 ) {
   const {
+    selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
     isSubwayStationVisible,
@@ -90,6 +89,18 @@ export function Panel(
         />
         <For each={focusedStations()}>
           {(station) => {
+            const {
+              fully_accessible,
+              partially_accessible,
+            } = station;
+
+            const fullyAccessible = fully_accessible !== null
+              ? new Date(fully_accessible)
+              : null;
+            const partiallyAccessible = partially_accessible !== null
+              ? new Date(partially_accessible)
+              : null;
+
             return (
               <div
                 class={css({
@@ -126,24 +137,26 @@ export function Panel(
                       alignItems: "center",
                     })}
                   >
-                    {station.ada === "0"
-                      ? (
-                        <>
-                          <p>Not accessible</p>
-                          <CircleIcon level="negative" size="md" />
-                        </>
-                      )
-                      : station.ada === "1"
+                    {fullyAccessible !== null &&
+                        fullyAccessible <= selectedAccessibilitySnapshot()
                       ? (
                         <>
                           <p>Fully accessible</p>
                           <CircleIcon level="positive" size="md" />
                         </>
                       )
-                      : (
+                      : partiallyAccessible !== null &&
+                          partiallyAccessible <= selectedAccessibilitySnapshot()
+                      ? (
                         <>
                           <p>Partially accessible</p>
                           <CircleIcon level="neutral" size="md" />
+                        </>
+                      )
+                      : (
+                        <>
+                          <p>Not accessible</p>
+                          <CircleIcon level="negative" size="md" />
                         </>
                       )}
                   </div>
