@@ -11,7 +11,6 @@ import { Map, View } from "ol";
 import { useGeographic } from "ol/proj";
 import { attribution, zoom } from "./controls/index.tsx";
 import {
-  cityCouncilDistrict,
   nycBasemap,
   SubwayStationsAda,
   subwayStationsAda,
@@ -24,7 +23,6 @@ export function Atlas(
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
-    isCityCouncilDistrictVisible: Accessor<boolean>;
     setFocusedStations: Setter<Array<SubwayStationsAda>>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
@@ -34,18 +32,12 @@ export function Atlas(
     selectedSubwayStationId,
     setSelectedSubwayStationId,
     isSubwayStationVisible,
-    isCityCouncilDistrictVisible,
     setFocusedStations,
     focusedStations,
   } = props;
   createEffect(() => {
     const isVisible = isSubwayStationVisible();
     subwayStationsAdaLayer.set("visible", isVisible);
-  });
-
-  createEffect(() => {
-    const isVisible = isCityCouncilDistrictVisible();
-    cityCouncilDistrictLayer.set("visible", isVisible);
   });
 
   createEffect(() => {
@@ -60,7 +52,6 @@ export function Atlas(
     focusedStations,
     selectedAccessibilitySnapshot,
   );
-  const cityCouncilDistrictLayer = cityCouncilDistrict();
   onMount(() => {
     useGeographic();
 
@@ -68,7 +59,6 @@ export function Atlas(
       target: "atlas",
       layers: [
         nycBasemapLayer,
-        cityCouncilDistrictLayer,
         subwayStationsAdaLayer,
       ],
       controls: [attribution(), zoom()],

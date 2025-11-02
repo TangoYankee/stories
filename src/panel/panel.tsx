@@ -42,12 +42,11 @@ const routeIconFileName: Record<string, string> = {
 export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
     selectedAccessibilitySnapshot: Accessor<Date>;
+    setSelectedAccessibilitySnapshot: Setter<Date>;
     selectedSubwayStationId: Accessor<string | null>;
     setSelectedSubwayStationId: Setter<string | null>;
     isSubwayStationVisible: Accessor<boolean>;
     setIsSubwayStationVisible: Setter<boolean>;
-    isCityCouncilDistrictVisible: Accessor<boolean>;
-    setIsCityCouncilDistrictVisible: Setter<boolean>;
     focusedStations: Accessor<Array<SubwayStationsAda>>;
   },
 ) {
@@ -57,8 +56,6 @@ export function Panel(
     setSelectedSubwayStationId,
     isSubwayStationVisible,
     setIsSubwayStationVisible,
-    isCityCouncilDistrictVisible,
-    setIsCityCouncilDistrictVisible,
     focusedStations,
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
@@ -81,12 +78,6 @@ export function Panel(
             }}
           />
         </div>
-        <Legend
-          class={css({
-            display: "flex",
-            flexDirection: "column",
-          })}
-        />
         <For each={focusedStations()}>
           {(station) => {
             const {
@@ -184,22 +175,6 @@ export function Panel(
             );
           }}
         </For>
-      </div>
-      <div
-        class={css({
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
-        })}
-      >
-        <h2>City Council Districts</h2>
-        <Switch
-          isChecked={isCityCouncilDistrictVisible}
-          onInputChange={() => {
-            setIsCityCouncilDistrictVisible((isVisible) => !isVisible);
-          }}
-        />
       </div>
     </div>
   );

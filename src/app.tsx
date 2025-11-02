@@ -14,14 +14,12 @@ const App: Component = () => {
   const [isSubwayStationVisible, setIsSubwayStationVisible] = createSignal(
     true,
   );
-  const [isCityCouncilDistrictVisible, setIsCityCouncilDistrictVisible] =
-    createSignal(true);
 
   const [selectedSubwayStationId, setSelectedSubwayStationId] = createSignal<
     string | null
   >(null);
 
-  const [selectedAccessibilitySnapshot, _setSelectedAccessibilitySnapshot] =
+  const [selectedAccessibilitySnapshot, setSelectedAccessibilitySnapshot] =
     createSignal(new Date("2025-oct-15"));
   return (
     <div
@@ -42,12 +40,11 @@ const App: Component = () => {
       />
       <Panel
         selectedAccessibilitySnapshot={selectedAccessibilitySnapshot}
+        setSelectedAccessibilitySnapshot={setSelectedAccessibilitySnapshot}
         selectedSubwayStationId={selectedSubwayStationId}
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         isSubwayStationVisible={isSubwayStationVisible}
         setIsSubwayStationVisible={setIsSubwayStationVisible}
-        isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
-        setIsCityCouncilDistrictVisible={setIsCityCouncilDistrictVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "3 / 5",
@@ -99,7 +96,6 @@ const App: Component = () => {
         setSelectedSubwayStationId={setSelectedSubwayStationId}
         setFocusedStations={setFocusedStations}
         isSubwayStationVisible={isSubwayStationVisible}
-        isCityCouncilDistrictVisible={isCityCouncilDistrictVisible}
         focusedStations={focusedStations}
         class={css({
           gridRow: "2 / 5",
