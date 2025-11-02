@@ -62,7 +62,8 @@ export function Panel(
   } = props;
   const isSelected = createSelector(selectedSubwayStationId);
   const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
-  const [seeFewerStations, setSeeFewerStations] = createSignal(true);
+  const [panelView, setPanelView] = createSignal<"about" | "stations">("about");
+  const [seeFewerStations, setSeeFewerStations] = createSignal(false);
   const stationsView = () =>
     seeFewerStations() ? focusedStations().slice(0, 1) : focusedStations();
   return (
@@ -70,214 +71,362 @@ export function Panel(
       <div
         class={css({
           display: "flex",
-          width: "100%",
-          flexDirection: "column",
-          padding: "1",
+          justifyContent: "space-between",
         })}
       >
         <h1
           class={css({
             fontWeight: "bold",
-            fontSize: "large",
+            fontSize: "2xl",
           })}
         >
           Subway Stations
         </h1>
-        <div
+        <button
+          type="submit"
           class={css({
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            alignItems: "center",
+            border: "solid",
+            borderWidth: "medium",
+            borderRadius: "lg",
+            borderColor: "amber.500",
+            padding: "0.5",
+            width: "10rem",
+            backgroundColor: "zinc.50",
+            fontWeight: "bolder",
+            lineHeight: "1rem",
+            color: "sky.700",
+            alignSelf: "end",
+            _hover: {
+              cursor: "pointer",
+              backgroundColor: "zinc.200",
+            },
           })}
+          onClick={() =>
+            setPanelView((view) => view === "about" ? "stations" : "about")}
         >
-          <label for="snapshot-selector">Snapshot in time</label>
-          <select
-            id="snapshot-selector"
-            onInput={(e) => {
-              const { value } = e.currentTarget;
-              setSelectedAccessibilitySnapshot(value);
-            }}
-            class={css({
-              borderStyle: "solid",
-              borderWidth: "thin",
-              borderRadius: "lg",
-              borderColor: "zinc.500",
-            })}
-          >
-            <option
-              value="2025-10-15"
-              selected={isSnapshotSelected("2025-10-15")}
-            >
-              15 Oct 2025
-            </option>
-            <option
-              value="2025-02-18"
-              selected={isSnapshotSelected("2025-02-18")}
-            >
-              18 Feb 2025
-            </option>
-            <option
-              value="2024-04-17"
-              selected={isSnapshotSelected("2024-04-17")}
-            >
-              17 Apr 2024
-            </option>
-            <option
-              value="2024-01-12"
-              selected={isSnapshotSelected("2024-01-12")}
-            >
-              12 Jan 2024
-            </option>
-            <option
-              value="2023-10-24"
-              selected={isSnapshotSelected("2023-10-24")}
-            >
-              24 Oct 2023
-            </option>
-          </select>
-        </div>
-        <div
-          class={css({
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            alignItems: "center",
-          })}
-        >
-          <p>Show only stations upgraded at snapshot</p>
-          <Switch
-            isChecked={filterToUpgraded}
-            onInputChange={() =>
-              setFilterToUpgraded((filterToUpgraded) => !filterToUpgraded)}
-          />
-        </div>
+          {`${panelView() === "about" ? "See stations" : "Learn more"}`}
+        </button>
       </div>
-      <div
-        class={css({
-          maxHeight: "70dvh",
-          overflow: "auto",
-          scrollbarWidth: "none",
-        })}
-      >
-        <For each={stationsView()}>
-          {(station) => {
-            const {
-              fully_accessible,
-              partially_accessible,
-            } = station;
-
-            const snapshot = new Date(selectedAccessibilitySnapshot());
-            const isFullyAccessible = fully_accessible !== null &&
-              new Date(fully_accessible) <= snapshot;
-            const isPartiallyAccessible = partially_accessible !== null &&
-              new Date(partially_accessible) <= snapshot;
-
-            return (
+      {panelView() === "stations"
+        ? (
+          <>
+            <div
+              class={css({
+                display: "flex",
+                width: "100%",
+                flexDirection: "column",
+                padding: "1",
+              })}
+            >
               <div
                 class={css({
                   display: "flex",
-                  margin: 1,
-                  padding: 1,
                   justifyContent: "space-between",
+                  flexWrap: "wrap",
                   alignItems: "center",
-                  border: "solid",
-                  borderWidth: "medium",
-                  borderRadius: "lg",
-                  borderColor: "zinc.500",
-                  backgroundColor: isSelected(station.id)
-                    ? "sky.300"
-                    : "slate.100",
-                  _hover: {
-                    cursor: "pointer",
-                    borderStyle: "dashed",
-                  },
                 })}
-                onClick={() => setSelectedSubwayStationId(station.id)}
               >
-                <div>
-                  <h3
-                    class={css({
-                      fontWeight: "bold",
-                    })}
-                  >
-                    {station.stop_name}
-                  </h3>
-                  <div
-                    class={css({
-                      display: "flex",
-                      alignItems: "center",
-                    })}
-                  >
-                    {isFullyAccessible
-                      ? (
-                        <>
-                          <p>Fully accessible</p>
-                          <CircleIcon level="positive" size="md" />
-                        </>
-                      )
-                      : isPartiallyAccessible
-                      ? (
-                        <>
-                          <p>Partially accessible</p>
-                          <CircleIcon level="neutral" size="md" />
-                        </>
-                      )
-                      : (
-                        <>
-                          <p>Not accessible</p>
-                          <CircleIcon level="negative" size="md" />
-                        </>
-                      )}
-                  </div>
-                </div>
-                <div
+                <label for="snapshot-selector">Snapshot in time</label>
+                <select
+                  id="snapshot-selector"
+                  onInput={(e) => {
+                    const { value } = e.currentTarget;
+                    setSelectedAccessibilitySnapshot(value);
+                  }}
                   class={css({
-                    display: "flex",
+                    borderStyle: "solid",
+                    borderWidth: "thin",
+                    borderRadius: "lg",
+                    borderColor: "zinc.500",
                   })}
                 >
-                  <Index each={station.daytime_routes.split(" ")}>
-                    {(routeId) => {
-                      const fileName = routeId() in routeIconFileName
-                        ? routeIconFileName[routeId()]
-                        : "t";
-                      return (
-                        <img
-                          src={`icons/${fileName}.svg`}
-                          class={css({ height: "1.4rem" })}
-                        />
-                      );
-                    }}
-                  </Index>
-                </div>
+                  <option
+                    value="2025-10-15"
+                    selected={isSnapshotSelected("2025-10-15")}
+                  >
+                    15 Oct 2025
+                  </option>
+                  <option
+                    value="2025-02-18"
+                    selected={isSnapshotSelected("2025-02-18")}
+                  >
+                    18 Feb 2025
+                  </option>
+                  <option
+                    value="2024-04-17"
+                    selected={isSnapshotSelected("2024-04-17")}
+                  >
+                    17 Apr 2024
+                  </option>
+                  <option
+                    value="2024-01-12"
+                    selected={isSnapshotSelected("2024-01-12")}
+                  >
+                    12 Jan 2024
+                  </option>
+                  <option
+                    value="2023-10-24"
+                    selected={isSnapshotSelected("2023-10-24")}
+                  >
+                    24 Oct 2023
+                  </option>
+                </select>
               </div>
-            );
-          }}
-        </For>
-      </div>
-      <button
-        type="submit"
-        class={css({
-          border: "solid",
-          borderWidth: "medium",
-          borderRadius: "lg",
-          borderColor: "amber.500",
-          padding: "0.5",
-          width: "10rem",
-          backgroundColor: "zinc.50",
-          fontWeight: "bolder",
-          lineHeight: "1rem",
-          color: "sky.700",
-          alignSelf: "end",
-          _hover: {
-            cursor: "pointer",
-            backgroundColor: "zinc.200",
-          },
-        })}
-        onClick={() => setSeeFewerStations((state) => !state)}
-      >
-        {`See ${seeFewerStations() ? "more" : "fewer"} stations`}
-      </button>
+              <div
+                class={css({
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                })}
+              >
+                <p>Show only stations upgraded at snapshot</p>
+                <Switch
+                  isChecked={filterToUpgraded}
+                  onInputChange={() =>
+                    setFilterToUpgraded((filterToUpgraded) =>
+                      !filterToUpgraded
+                    )}
+                />
+              </div>
+            </div>
+            <div
+              class={css({
+                maxHeight: "70dvh",
+                overflow: "auto",
+                scrollbarWidth: "none",
+              })}
+            >
+              <For each={stationsView()}>
+                {(station) => {
+                  const {
+                    fully_accessible,
+                    partially_accessible,
+                  } = station;
+
+                  const snapshot = new Date(selectedAccessibilitySnapshot());
+                  const isFullyAccessible = fully_accessible !== null &&
+                    new Date(fully_accessible) <= snapshot;
+                  const isPartiallyAccessible = partially_accessible !== null &&
+                    new Date(partially_accessible) <= snapshot;
+
+                  return (
+                    <div
+                      class={css({
+                        display: "flex",
+                        margin: 1,
+                        padding: 1,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        border: "solid",
+                        borderWidth: "medium",
+                        borderRadius: "lg",
+                        borderColor: "zinc.500",
+                        backgroundColor: isSelected(station.id)
+                          ? "sky.300"
+                          : "slate.100",
+                        _hover: {
+                          cursor: "pointer",
+                          borderStyle: "dashed",
+                        },
+                      })}
+                      onClick={() => setSelectedSubwayStationId(station.id)}
+                    >
+                      <div>
+                        <h3
+                          class={css({
+                            fontWeight: "bold",
+                          })}
+                        >
+                          {station.stop_name}
+                        </h3>
+                        <div
+                          class={css({
+                            display: "flex",
+                            alignItems: "center",
+                          })}
+                        >
+                          {isFullyAccessible
+                            ? (
+                              <>
+                                <p>Fully accessible</p>
+                                <CircleIcon level="positive" size="md" />
+                              </>
+                            )
+                            : isPartiallyAccessible
+                            ? (
+                              <>
+                                <p>Partially accessible</p>
+                                <CircleIcon level="neutral" size="md" />
+                              </>
+                            )
+                            : (
+                              <>
+                                <p>Not accessible</p>
+                                <CircleIcon level="negative" size="md" />
+                              </>
+                            )}
+                        </div>
+                      </div>
+                      <div
+                        class={css({
+                          display: "flex",
+                        })}
+                      >
+                        <Index each={station.daytime_routes.split(" ")}>
+                          {(routeId) => {
+                            const fileName = routeId() in routeIconFileName
+                              ? routeIconFileName[routeId()]
+                              : "t";
+                            return (
+                              <img
+                                src={`icons/${fileName}.svg`}
+                                class={css({ height: "1.4rem" })}
+                              />
+                            );
+                          }}
+                        </Index>
+                      </div>
+                    </div>
+                  );
+                }}
+              </For>
+            </div>
+            <button
+              type="submit"
+              class={css({
+                border: "solid",
+                borderWidth: "medium",
+                borderRadius: "lg",
+                borderColor: "amber.500",
+                padding: "0.5",
+                width: "10rem",
+                backgroundColor: "zinc.50",
+                fontWeight: "bolder",
+                lineHeight: "1rem",
+                color: "sky.700",
+                alignSelf: "end",
+                _hover: {
+                  cursor: "pointer",
+                  backgroundColor: "zinc.200",
+                },
+              })}
+              onClick={() => setSeeFewerStations((state) => !state)}
+            >
+              {`See ${seeFewerStations() ? "more" : "fewer"} stations`}
+            </button>
+          </>
+        )
+        : (
+          <div
+            class={css({
+              display: "flex",
+              flexDirection: "column",
+              maxHeight: "70dvh",
+              overflow: "auto",
+              scrollbarWidth: "none",
+              padding: "1",
+            })}
+          >
+            <div
+              class={css({
+                margin: "1",
+              })}
+            >
+              <h2
+                class={css({
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  fontSize: "lg",
+                })}
+              >
+                About station accessibility
+              </h2>
+              <p
+                class={css({
+                  padding: "0.5",
+                })}
+              >
+                The New York City subway system is one of the largest in the
+                world, providing millions of rides every day. Unfortunately, not
+                everyone has equal access to its services.{" "}
+                <b>
+                  Of its nearly 500 subway stations, only about a quarter are
+                  considered ADA compliant
+                </b>. A station must meet several criteria to be accessible; one
+                of the most cost-prohibitive criteria is elevator access to each
+                platform.
+              </p>
+              <p
+                class={css({
+                  padding: "0.5",
+                })}
+              >
+                Spurred by lawsuit settled in spring of 2023,{" "}
+                <b>
+                  the MTA plans to achieve ADA compliance at 95% of its stations
+                  by 2055.
+                </b>{" "}
+                This will benefit every New Yorker, as more of our community
+                members with temporary and permanent mobility challenges gain
+                greater access to the city.
+              </p>
+            </div>
+            <div
+              class={css({
+                margin: "1",
+              })}
+            >
+              <h2
+                class={css({
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                  fontSize: "lg",
+                })}
+              >
+                About the map data
+              </h2>
+              <p
+                class={css({
+                  padding: "0.5",
+                })}
+              >
+                This map tracks the progress of the MTA's upgrade efforts.
+                Starting with October 2023, it shows snapshots of the subway
+                system. Each snapshot shows the accessibility status of every
+                subway station. It is possible to view only the stations that
+                were made accessible since the last snapshot.
+              </p>
+              <p
+                class={css({
+                  padding: "0.5",
+                })}
+              >
+                A new snapshot is added every 3 to 6 months, with the{" "}
+                <i>next planned snapshot in Jan 2026.</i> Data are sourced from
+                {" "}
+                <a
+                  class={css({
+                    color: "sky.700",
+                    _hover: {
+                      textDecoration: "underline",
+                    },
+                  })}
+                  href="https://data.ny.gov/Transportation/MTA-Subway-Stations/39hk-dx4f/about_data"
+                >
+                  NYC Open Data MTA Subway Stations Dataset
+                </a>
+              </p>
+              <p
+                class={css({
+                  padding: "0.5",
+                })}
+              >
+                Click <b>"See stations"</b> above to get started
+              </p>
+            </div>
+          </div>
+        )}
     </div>
   );
 }
