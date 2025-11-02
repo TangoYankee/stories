@@ -12,6 +12,13 @@ tippecanoe \
 tippecanoe \
     -z13 \
     --projection=EPSG:4326 \
+    -o data/subway-lines.pmtiles \
+    -l fill data/subway_line_fill.geojson \
+    --force
+
+tippecanoe \
+    -z13 \
+    --projection=EPSG:4326 \
     -o data/city-council-district-fill.pmtiles \
     -l fill data/city_council_district_fill.geojson \
     --force

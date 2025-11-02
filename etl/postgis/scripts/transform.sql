@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS
     subway_ada,
     source_subway_station_combined,
+    subway_line,
     city_council_district;
 
 -- Subway stations
@@ -95,6 +96,23 @@ SELECT
 	fill
 FROM source_subway_station_combined
 ORDER BY gtfs_stop_id;
+
+-- Subway lines
+CREATE TABLE IF NOT EXISTS subway_line (
+	id smallint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+	service text,
+	fill geography(MultiLineString, 4326)
+);
+
+INSERT INTO subway_line(
+	service,
+	fill
+)
+SELECT
+	service,
+	wkb_geometry
+FROM source_subway_line
+ORDER BY service;
 
 -- City Council Districts
 CREATE TABLE IF NOT EXISTS city_council_district(

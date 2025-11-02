@@ -11,4 +11,7 @@ mc get spaces/tangoyankee/nyc_subway_stations/2025_feb_18_nyc_subway_stations.cs
 mc get spaces/tangoyankee/nyc_subway_stations/2025_apr_15_nyc_subway_stations.csv ./data/2025_apr_15_nyc_subway_stations.csv
 mc get spaces/tangoyankee/nyc_subway_stations/2025_jul_15_nyc_subway_stations.csv ./data/2025_jul_15_nyc_subway_stations.csv
 mc get spaces/tangoyankee/nyc_subway_stations/2025_oct_15_nyc_subway_stations.csv ./data/2025_oct_15_nyc_subway_stations.csv
+
+mc get spaces/tangoyankee/nyc_subway_lines.geojson ./data/nyc_subway_lines.geojson
+
 mc get spaces/tangoyankee/source_city_council_districts.geojson ./data/source_city_council_districts.geojson
