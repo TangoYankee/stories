@@ -17,7 +17,6 @@ import {
   subwayStationsAda,
 } from "./layers/index.ts";
 import { cartesianDistance } from "./utils.tsx";
-import { create } from "ol/transform";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement> & {
@@ -37,7 +36,9 @@ export function Atlas(
     setFocusedStations,
     focusedStations,
   } = props;
-  const [stationsInExtent, setStationsInExtent] = createSignal<Array<SubwayStationsAda>>([])
+  const [stationsInExtent, setStationsInExtent] = createSignal<
+    Array<SubwayStationsAda>
+  >([]);
 
   createEffect(() => {
     selectedSubwayStationId();
@@ -52,24 +53,23 @@ export function Atlas(
   createEffect(() => {
     const shouldFilter = filterToUpgraded();
     const snapshot = selectedAccessibilitySnapshot();
-    console.log("shouldFilter", shouldFilter);
-    const stations = shouldFilter ? stationsInExtent().filter(station => {
-      const { fully_accessible } = station;
-      // const fullyAccessible = fully_accessible !== null ? new Date(fully_accessible) : null;
-      // console.log("fullyAccessible", fullyAccessible?.toISOString().split('T')[0]);
-      console.log("fully accessible", fully_accessible);
-      console.log("snapshot", snapshot.toISOString().split('T')[0]);
-      return fully_accessible !== null && fully_accessible === snapshot.toISOString().split('T')[0];
-    }) : stationsInExtent();
+    const stations = shouldFilter
+      ? stationsInExtent().filter((station) => {
+        const { fully_accessible } = station;
+        return fully_accessible !== null &&
+          fully_accessible === snapshot.toISOString().split("T")[0];
+      })
+      : stationsInExtent();
     setFocusedStations(stations.slice(0, 7));
     subwayStationsAdaLayer.changed();
-  })
+  });
 
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
     selectedSubwayStationId,
     focusedStations,
     selectedAccessibilitySnapshot,
+    filterToUpgraded,
   );
   onMount(() => {
     useGeographic();

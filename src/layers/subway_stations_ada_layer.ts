@@ -17,6 +17,7 @@ export const subwayStationsAda = (
   selectedId: Accessor<string | null>,
   focusedStations: Accessor<Array<SubwayStationsAda>>,
   selectedAccessibilitySnapshot: Accessor<Date>,
+  filterToUpgraded: Accessor<boolean>,
 ) =>
   new VectorTile({
     source: new PMTilesVectorSource({
@@ -43,7 +44,11 @@ export const subwayStationsAda = (
         ? "rgba(255,255,191,0.9)"
         : "rgba(252,141,89,0.9)";
 
-      const radius = 10 / Math.log(resolution);
+      const isUpgradedStation = fully_accessible ===
+        selectedAccessibilitySnapshot().toISOString().split("T")[0];
+      const radius = filterToUpgraded() && !isUpgradedStation
+        ? 0
+        : 10 / Math.log(resolution);
       const isFocusedStation = focusedStations().some((station) =>
         station.id === id
       );

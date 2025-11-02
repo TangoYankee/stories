@@ -81,31 +81,31 @@ export function Panel(
             }}
           >
             <option
-              value={"2025-oct-15"}
+              value="2025-oct-15"
               selected={isSnapshotSelected(new Date("2025-oct-15"))}
             >
               15 Oct 2025
             </option>
             <option
-              value={"2025-feb-18"}
+              value="2025-feb-18"
               selected={isSnapshotSelected(new Date("2025-feb-18"))}
             >
               18 Feb 2025
             </option>
             <option
-              value={"2024-apr-17"}
+              value="2024-apr-17"
               selected={isSnapshotSelected(new Date("2024-apr-17"))}
             >
               17 Apr 2024
             </option>
             <option
-              value={"2024-jan-12"}
+              value="2024-jan-12"
               selected={isSnapshotSelected(new Date("2024-jan-12"))}
             >
               12 Jan 2024
             </option>
             <option
-              value={"2023-oct-24"}
+              value="2023-oct-24"
               selected={isSnapshotSelected(new Date("2023-oct-24"))}
             >
               24 Oct 2023
