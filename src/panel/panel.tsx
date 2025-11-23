@@ -2,16 +2,9 @@ import { JSX } from "solid-js/jsx-runtime";
 import { CircleIcon } from "../legend/index.ts";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../../styled-system/css/index.d.ts";
-import {
-  type Accessor,
-  createSelector,
-  createSignal,
-  For,
-  Index,
-  type Setter,
-} from "solid-js";
-import { SubwayStationsAda } from "../layers/subway_stations_ada_layer.ts";
+import { createSelector, createSignal, For, Index } from "solid-js";
 import { Switch } from "../switch/switch.tsx";
+import { useAtlasContext } from "../store/context.tsx";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -41,25 +34,17 @@ const routeIconFileName: Record<string, string> = {
 };
 
 export function Panel(
-  props: JSX.HTMLAttributes<HTMLDivElement> & {
-    filterToUpgraded: Accessor<boolean>;
-    setFilterToUpgraded: Setter<boolean>;
-    selectedAccessibilitySnapshot: Accessor<string>;
-    setSelectedAccessibilitySnapshot: Setter<string>;
-    selectedSubwayStationId: Accessor<string | null>;
-    setSelectedSubwayStationId: Setter<string | null>;
-    focusedStations: Accessor<Array<SubwayStationsAda>>;
-  },
+  props: JSX.HTMLAttributes<HTMLDivElement>,
 ) {
   const {
     filterToUpgraded,
+    focusedStations,
     setFilterToUpgraded,
     selectedAccessibilitySnapshot,
     setSelectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
-    focusedStations,
-  } = props;
+  } = useAtlasContext();
   const isSelected = createSelector(selectedSubwayStationId);
   const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
   const [panelView, setPanelView] = createSignal<"about" | "stations">("about");

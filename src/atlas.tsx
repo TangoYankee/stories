@@ -1,12 +1,4 @@
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  JSX,
-  JSXElement,
-  onMount,
-  type Setter,
-} from "solid-js";
+import { createEffect, createSignal, JSX, JSXElement, onMount } from "solid-js";
 import "ol/ol.css";
 import { Map, View } from "ol";
 import { useGeographic } from "ol/proj";
@@ -18,25 +10,19 @@ import {
   subwayStationsAda,
 } from "./layers/index.ts";
 import { cartesianDistance } from "./utils.tsx";
+import { useAtlasContext } from "./store/context.tsx";
 
 export function Atlas(
-  props: JSX.HTMLAttributes<HTMLDivElement> & {
-    filterToUpgraded: Accessor<boolean>;
-    selectedAccessibilitySnapshot: Accessor<string>;
-    selectedSubwayStationId: Accessor<string | null>;
-    setSelectedSubwayStationId: Setter<string | null>;
-    setFocusedStations: Setter<Array<SubwayStationsAda>>;
-    focusedStations: Accessor<Array<SubwayStationsAda>>;
-  },
+  props: JSX.HTMLAttributes<HTMLDivElement>,
 ): JSXElement {
   const {
     filterToUpgraded,
+    focusedStations,
+    setFocusedStations,
     selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
-    setFocusedStations,
-    focusedStations,
-  } = props;
+  } = useAtlasContext();
   const [mapAccess, setMapAccess] = createSignal<Map | null>(null);
   const [stationsInExtent, setStationsInExtent] = createSignal<
     Array<SubwayStationsAda>
