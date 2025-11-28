@@ -11,6 +11,7 @@ import {
 } from "./layers/index.ts";
 import { cartesianDistance } from "./utils.tsx";
 import { useAtlasContext } from "./store/context.tsx";
+import { FULL_EXTENT_VIEW } from "./constants.ts";
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement>,
@@ -22,11 +23,11 @@ export function Atlas(
     selectedAccessibilitySnapshot,
     selectedSubwayStationId,
     setSelectedSubwayStationId,
+    stationsInExtent,
+    setStationsInExtent,
+    setViewCenter,
   } = useAtlasContext();
   const [mapAccess, setMapAccess] = createSignal<Map | null>(null);
-  const [stationsInExtent, setStationsInExtent] = createSignal<
-    Array<SubwayStationsAda>
-  >([]);
 
   createEffect(() => {
     selectedSubwayStationId();
@@ -55,11 +56,7 @@ export function Atlas(
     const shouldFilter = filterToUpgraded();
     if (map === null) return;
     if (shouldFilter) {
-      const nextView = new View({
-        center: [-74, 40.7],
-        zoom: 11,
-        extent: [-75, 40.2, -73, 41.2],
-      });
+      const nextView = new View(FULL_EXTENT_VIEW);
       map.setView(nextView);
     }
   });
@@ -83,11 +80,7 @@ export function Atlas(
         subwayLinesLayer,
       ],
       controls: [attribution(), zoom()],
-      view: new View({
-        center: [-74, 40.7],
-        zoom: 11,
-        extent: [-75, 40.2, -73, 41.2],
-      }),
+      view: new View(FULL_EXTENT_VIEW),
     });
 
     setMapAccess(map);
@@ -106,6 +99,7 @@ export function Atlas(
           midpoint,
         };
       });
+      setStationsInExtent(stationsRandom);
 
       const viewCenter = map.getView().getState().center;
       const stations = stationsRandom.toSorted((stationA, stationB) => {
@@ -126,8 +120,6 @@ export function Atlas(
         });
         return distanceStationA - distanceStationB;
       });
-
-      setStationsInExtent(stations);
     });
 
     map.on("moveend", (e) => {
@@ -146,6 +138,7 @@ export function Atlas(
       });
 
       const viewCenter = map.getView().getState().center;
+      setViewCenter(viewCenter);
       const stations = stationsRandom.toSorted((stationA, stationB) => {
         const midpointStationA = stationA.midpoint;
         const midpointStationB = stationB.midpoint;
