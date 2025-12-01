@@ -5,6 +5,8 @@ import { css } from "../../styled-system/css/index.d.ts";
 import { createSelector, createSignal, For, Index } from "solid-js";
 import { Switch } from "../switch/switch.tsx";
 import { useAtlasContext } from "../store/context.tsx";
+import { transform } from "ol/proj";
+import { STATION_ZOOM } from "../constants.ts";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -37,15 +39,14 @@ export function Panel(
   props: JSX.HTMLAttributes<HTMLDivElement>,
 ) {
   const {
-    filterToUpgraded,
     focusedStations,
+    filterToUpgraded,
     setFilterToUpgraded,
+    mapView,
     selectedAccessibilitySnapshot,
     setSelectedAccessibilitySnapshot,
-    selectedSubwayStationId,
-    setSelectedSubwayStationId,
   } = useAtlasContext();
-  const isSelected = createSelector(selectedSubwayStationId);
+  const isStationSelected = createSelector(() => focusedStations().at(0)?.id);
   const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
   const [panelView, setPanelView] = createSignal<"about" | "stations">("about");
   const [seeFewerStations, setSeeFewerStations] = createSignal(false);
@@ -203,19 +204,37 @@ export function Panel(
                         padding: 1,
                         justifyContent: "space-between",
                         alignItems: "center",
-                        border: "solid",
                         borderWidth: "medium",
                         borderRadius: "lg",
-                        borderColor: "zinc.500",
-                        backgroundColor: isSelected(station.id)
+                        borderStyle: "solid",
+                        borderColor: "zinc.400",
+                        backgroundColor: isStationSelected(station.id)
                           ? "sky.300"
                           : "slate.100",
                         _hover: {
                           cursor: "pointer",
-                          borderStyle: "dashed",
+                          borderColor: "zinc.500",
                         },
                       })}
-                      onClick={() => setSelectedSubwayStationId(station.id)}
+                      onClick={() => {
+                        const view = mapView();
+                        if (view === undefined) return;
+                        const center = station.midpoint;
+                        const wgsCenter = transform(
+                          center,
+                          "EPSG:3857",
+                          "EPSG:4326",
+                        );
+                        const prevZoom = view.getZoom();
+                        const nextZoom = prevZoom === undefined
+                          ? STATION_ZOOM
+                          : Math.max(prevZoom, STATION_ZOOM);
+                        view.animate({
+                          zoom: nextZoom,
+                          center: wgsCenter,
+                          duration: 500,
+                        });
+                      }}
                     >
                       <div>
                         <h3

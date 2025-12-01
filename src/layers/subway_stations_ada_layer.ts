@@ -14,7 +14,6 @@ export interface SubwayStationsAda {
 }
 
 export const subwayStationsAda = (
-  selectedId: Accessor<string | null>,
   focusedStations: Accessor<Array<SubwayStationsAda>>,
   selectedAccessibilitySnapshot: Accessor<string>,
   filterToUpgraded: Accessor<boolean>,
@@ -35,7 +34,9 @@ export const subwayStationsAda = (
         ? new Date(partially_accessible)
         : null;
       // https://colorbrewer2.org/#type=diverging&scheme=Spectral&n=3
-      const fillColor = id === selectedId()
+      const topStation = focusedStations()[0];
+      const topStationId = topStation === undefined ? null : topStation.id;
+      const fillColor = id === topStationId
         ? "rgba(0, 0, 255, 1)"
         : fullyAccessible !== null &&
             fullyAccessible <= snapshot

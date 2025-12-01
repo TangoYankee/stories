@@ -1,8 +1,8 @@
 import { createEffect, createSignal, JSX, JSXElement, onMount } from "solid-js";
 import "ol/ol.css";
-import { Map, View } from "ol";
-import { useGeographic } from "ol/proj";
-import { attribution, zoom } from "./controls/index.tsx";
+import { Map } from "ol";
+import { transform, useGeographic } from "ol/proj";
+import { attribution, view, zoom } from "./controls/index.tsx";
 import {
   nycBasemap,
   subwayLine,
@@ -11,6 +11,45 @@ import {
 } from "./layers/index.ts";
 import { cartesianDistance } from "./utils.tsx";
 import { useAtlasContext } from "./store/context.tsx";
+import { FULL_EXTENT_VIEW, STATION_ZOOM } from "./constants.ts";
+import { Coordinate } from "ol/coordinate";
+import RenderFeature from "ol/render/Feature";
+
+const findStationsInExtent = (
+  features: Array<RenderFeature>,
+) =>
+  features.map((feature) => {
+    const properties = feature.getProperties() as SubwayStationsAda;
+    const midpoint = feature.getFlatMidpoint();
+    return {
+      ...properties,
+      midpoint,
+    };
+  });
+
+const findSortedStations = (
+  stations: Array<SubwayStationsAda & { midpoint: Coordinate }>,
+  viewCenter: Coordinate,
+) => {
+  return stations.toSorted((stationA, stationB) => {
+    const midpointStationA = stationA.midpoint;
+    const midpointStationB = stationB.midpoint;
+    const distanceStationA = cartesianDistance({
+      x1: midpointStationA[0],
+      y1: midpointStationA[1],
+      x2: viewCenter[0],
+      y2: viewCenter[1],
+    });
+
+    const distanceStationB = cartesianDistance({
+      x1: midpointStationB[0],
+      y1: midpointStationB[1],
+      x2: viewCenter[0],
+      y2: viewCenter[1],
+    });
+    return distanceStationA - distanceStationB;
+  });
+};
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement>,
@@ -19,26 +58,24 @@ export function Atlas(
     filterToUpgraded,
     focusedStations,
     setFocusedStations,
+    mapView,
+    setMapView,
     selectedAccessibilitySnapshot,
-    selectedSubwayStationId,
-    setSelectedSubwayStationId,
   } = useAtlasContext();
-  const [mapAccess, setMapAccess] = createSignal<Map | null>(null);
   const [stationsInExtent, setStationsInExtent] = createSignal<
-    Array<SubwayStationsAda>
+    Array<SubwayStationsAda & { midpoint: Coordinate }>
   >([]);
 
+  // reset focused stations when there are changes to:
+  // - active snapshot
+  // - whether filter to stations upgraded in the snapshot
+  // - stations in the extent of the map
   createEffect(() => {
-    selectedSubwayStationId();
-    subwayStationsAdaLayer.changed();
-  });
-
-  createEffect(() => {
-    selectedAccessibilitySnapshot();
-    subwayStationsAdaLayer.changed();
-  });
-
-  createEffect(() => {
+    const view = mapView();
+    if (view === undefined) return;
+    const wgsViewCenter = view.getCenter();
+    if (wgsViewCenter === undefined) return;
+    const epsgViewCenter = transform(wgsViewCenter, "EPSG:4326", "EPSG:3857");
     const snapshot = selectedAccessibilitySnapshot();
     const stations = filterToUpgraded()
       ? stationsInExtent().filter((station) => {
@@ -46,34 +83,37 @@ export function Atlas(
         return fully_accessible === snapshot;
       })
       : stationsInExtent();
-    setFocusedStations(stations.slice(0, 7));
+    const sortedStations = findSortedStations(stations, epsgViewCenter);
+    setFocusedStations(sortedStations.slice(0, 7));
     subwayStationsAdaLayer.changed();
   });
 
+  // Reset zoom when changing snapshot
   createEffect(() => {
-    const map = mapAccess();
-    const shouldFilter = filterToUpgraded();
-    if (map === null) return;
-    if (shouldFilter) {
-      const nextView = new View({
-        center: [-74, 40.7],
-        zoom: 11,
-        extent: [-75, 40.2, -73, 41.2],
-      });
-      map.setView(nextView);
-    }
+    const view = mapView();
+    if (view === undefined) return;
+    selectedAccessibilitySnapshot();
+    view.animate({
+      zoom: FULL_EXTENT_VIEW.zoom,
+      center: FULL_EXTENT_VIEW.center,
+      duration: 500,
+    });
+    subwayStationsAdaLayer.changed();
   });
 
   const nycBasemapLayer = nycBasemap();
   const subwayStationsAdaLayer = subwayStationsAda(
-    selectedSubwayStationId,
     focusedStations,
     selectedAccessibilitySnapshot,
     filterToUpgraded,
   );
   const subwayLinesLayer = subwayLine();
+
   onMount(() => {
     useGeographic();
+
+    const _mapView = view();
+    setMapView(_mapView);
 
     const map = new Map({
       target: "atlas",
@@ -83,113 +123,48 @@ export function Atlas(
         subwayLinesLayer,
       ],
       controls: [attribution(), zoom()],
-      view: new View({
-        center: [-74, 40.7],
-        zoom: 11,
-        extent: [-75, 40.2, -73, 41.2],
-      }),
+      view: _mapView,
     });
 
-    setMapAccess(map);
-
+    // set stations in extent
     map.on("loadend", (e) => {
       const extent = e.frameState?.extent;
       if (extent === undefined || extent === null) {
-        throw new Error("moveend: extent undefined");
+        throw new Error("loadend: extent not found");
       }
       const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
-      const stationsRandom = features.map((feature) => {
-        const properties = feature.getProperties() as SubwayStationsAda;
-        const midpoint = feature.getFlatMidpoint();
-        return {
-          ...properties,
-          midpoint,
-        };
-      });
-
-      const viewCenter = map.getView().getState().center;
-      const stations = stationsRandom.toSorted((stationA, stationB) => {
-        const midpointStationA = stationA.midpoint;
-        const midpointStationB = stationB.midpoint;
-        const distanceStationA = cartesianDistance({
-          x1: midpointStationA[0],
-          y1: midpointStationA[1],
-          x2: viewCenter[0],
-          y2: viewCenter[1],
-        });
-
-        const distanceStationB = cartesianDistance({
-          x1: midpointStationB[0],
-          y1: midpointStationB[1],
-          x2: viewCenter[0],
-          y2: viewCenter[1],
-        });
-        return distanceStationA - distanceStationB;
-      });
-
-      setStationsInExtent(stations);
+      setStationsInExtent(findStationsInExtent(features));
     });
 
+    // set stations in extent
     map.on("moveend", (e) => {
       const extent = e.frameState?.extent;
       if (extent === undefined || extent === null) {
-        throw new Error("moveend: extent undefined");
+        throw new Error("moveend: extent not found");
       }
       const features = subwayStationsAdaLayer.getFeaturesInExtent(extent);
-      const stationsRandom = features.map((feature) => {
-        const properties = feature.getProperties() as SubwayStationsAda;
-        const midpoint = feature.getFlatMidpoint();
-        return {
-          ...properties,
-          midpoint,
-        };
-      });
-
-      const viewCenter = map.getView().getState().center;
-      const stations = stationsRandom.toSorted((stationA, stationB) => {
-        const midpointStationA = stationA.midpoint;
-        const midpointStationB = stationB.midpoint;
-        const distanceStationA = cartesianDistance({
-          x1: midpointStationA[0],
-          y1: midpointStationA[1],
-          x2: viewCenter[0],
-          y2: viewCenter[1],
-        });
-
-        const distanceStationB = cartesianDistance({
-          x1: midpointStationB[0],
-          y1: midpointStationB[1],
-          x2: viewCenter[0],
-          y2: viewCenter[1],
-        });
-        return distanceStationA - distanceStationB;
-      });
-
-      setStationsInExtent(stations);
+      setStationsInExtent(findStationsInExtent(features));
     });
 
+    // move map to center a selected station
     map.on("click", async (e) => {
       const stationFeatures = await subwayStationsAdaLayer.getFeatures(e.pixel);
-      const nextStationId = stationFeatures.length === 0
-        ? null
-        : (stationFeatures[0].getProperties() as SubwayStationsAda)
-          .id;
-      const prevStationId = selectedSubwayStationId();
-      // ne previous and no next:
-      // do nothing
-      if (prevStationId === null && nextStationId === null) return;
-
-      // previous and next are same id
-      // set station id to null
-      if (prevStationId === nextStationId) {
-        setSelectedSubwayStationId(null);
-      }
-
-      // previous and next are not otherwise equarl
-      // (no previous and a next, or a previous and no next)
-      // set station id to value of next (whether next is string or null)
-      if (prevStationId !== nextStationId) {
-        setSelectedSubwayStationId(nextStationId);
+      const selectedStation = stationFeatures[0];
+      if (selectedStation === undefined) return;
+      const selectedExtent = selectedStation.getGeometry()?.getExtent();
+      if (selectedExtent === undefined) return;
+      const wgsCenter = transform(
+        [selectedExtent[0], selectedExtent[1]],
+        "EPSG:3857",
+        "EPSG:4326",
+      );
+      const view = mapView();
+      if (view !== undefined) {
+        const prevZoom = view.getZoom();
+        const nextZoom = prevZoom === undefined
+          ? STATION_ZOOM
+          : Math.max(prevZoom, STATION_ZOOM);
+        view.animate({ zoom: nextZoom, center: wgsCenter, duration: 500 });
       }
     });
   });
