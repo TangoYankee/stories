@@ -9,11 +9,11 @@ import {
   SubwayStationsAda,
   subwayStationsAda,
 } from "./layers/index.ts";
-import { cartesianDistance } from "./utils.tsx";
 import { useAtlasContext } from "./store/context.tsx";
 import { FULL_EXTENT_VIEW, STATION_ZOOM } from "./constants.ts";
 import { Coordinate } from "ol/coordinate";
 import RenderFeature from "ol/render/Feature";
+import { compareStationDistance, findTopN } from "./utils.ts";
 
 const findStationsInExtent = (
   features: Array<RenderFeature>,
@@ -26,30 +26,6 @@ const findStationsInExtent = (
       midpoint,
     };
   });
-
-const findSortedStations = (
-  stations: Array<SubwayStationsAda & { midpoint: Coordinate }>,
-  viewCenter: Coordinate,
-) => {
-  return stations.toSorted((stationA, stationB) => {
-    const midpointStationA = stationA.midpoint;
-    const midpointStationB = stationB.midpoint;
-    const distanceStationA = cartesianDistance({
-      x1: midpointStationA[0],
-      y1: midpointStationA[1],
-      x2: viewCenter[0],
-      y2: viewCenter[1],
-    });
-
-    const distanceStationB = cartesianDistance({
-      x1: midpointStationB[0],
-      y1: midpointStationB[1],
-      x2: viewCenter[0],
-      y2: viewCenter[1],
-    });
-    return distanceStationA - distanceStationB;
-  });
-};
 
 export function Atlas(
   props: JSX.HTMLAttributes<HTMLDivElement>,
@@ -83,8 +59,12 @@ export function Atlas(
         return fully_accessible === snapshot;
       })
       : stationsInExtent();
-    const sortedStations = findSortedStations(stations, epsgViewCenter);
-    setFocusedStations(sortedStations.slice(0, 7));
+    const closestStations = findTopN(
+      7,
+      stations,
+      compareStationDistance(epsgViewCenter),
+    );
+    setFocusedStations(closestStations);
     subwayStationsAdaLayer.changed();
   });
 
