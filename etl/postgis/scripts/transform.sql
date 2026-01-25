@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS source_subway_station_combined (
 	ada_2024_apr_17 char(1) CHECK (ada_2024_apr_17 IN ('0', '1', '2')),
 	ada_2025_feb_18 char(1) CHECK (ada_2025_feb_18 IN ('0', '1', '2')),
 	ada_2025_oct_15 char(1) CHECK (ada_2025_oct_15 IN ('0', '1', '2')),
+	ada_2026_jan_25 char(1) CHECK (ada_2026_jan_25 IN ('0', '1', '2')),
     fill geography(Point, 4326)
 );
 
@@ -26,6 +27,7 @@ INSERT INTO source_subway_station_combined (
 	ada_2024_apr_17,
 	ada_2025_feb_18,
 	ada_2025_oct_15,
+	ada_2026_jan_25,
 	fill
 )
 SELECT
@@ -37,11 +39,14 @@ SELECT
 	source_subway_station_2024_apr_17.ada,
 	source_subway_station_2025_feb_18.ada,
 	source_subway_station_2025_oct_15.ada,
+	source_subway_station_2026_jan_25.ada,
 	ST_POINT(
 	    source_subway_station_2025_oct_15.gtfs_longitude::decimal,
 		source_subway_station_2025_oct_15.gtfs_latitude::decimal
 	)::geography as fill
-FROM source_subway_station_2025_oct_15
+FROM source_subway_station_2026_jan_25
+LEFT JOIN  source_subway_station_2025_oct_15
+    ON source_subway_station_2025_oct_15.gtfs_stop_id = source_subway_station_2026_jan_25."gtfs stop id"
 LEFT JOIN source_subway_station_2025_feb_18
 	ON source_subway_station_2025_feb_18.gtfs_stop_id = source_subway_station_2025_oct_15.gtfs_stop_id
 LEFT JOIN source_subway_station_2024_apr_17
@@ -78,6 +83,7 @@ SELECT
 		WHEN ada_2024_apr_17 = '1' THEN date('2024_apr_17')
 		WHEN ada_2025_feb_18 = '1' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '1' THEN date('2025_oct_15')
+		WHEN ada_2026_jan_25 = '1' THEN date('2026_jan_25')
 	END,
 	CASE
 		WHEN ada_2023_oct_24 = '2' THEN date('2023_oct_24')
@@ -85,6 +91,7 @@ SELECT
 		WHEN ada_2024_apr_17 = '2' THEN date('2024_apr_17')
 		WHEN ada_2025_feb_18 = '2' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '2' THEN date('2025_oct_15')
+		WHEN ada_2026_jan_25 = '2' THEN date('2026_jan_25')
 	END,
 		CASE
 		WHEN ada_2023_oct_24 = '0' THEN date('2023_oct_24')
@@ -92,6 +99,7 @@ SELECT
 		WHEN ada_2024_apr_17 = '0' THEN date('2024_apr_17')
 		WHEN ada_2025_feb_18 = '0' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '0' THEN date('2025_oct_15')
+		WHEN ada_2026_jan_25 = '0' THEN date('2026_jan_25')
 	END,
 	fill
 FROM source_subway_station_combined
