@@ -39,7 +39,7 @@ const App: Component = () => {
             maxHeight: "100%",
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "slate.50/90",
+            backgroundColor: "white.a9",
             borderRadius: "sm",
             padding: "1",
             zIndex: "1",

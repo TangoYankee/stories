@@ -3,10 +3,13 @@ import { CircleIcon } from "../legend/index.ts";
 // @ts-ignore .ts file not created by styled-system
 import { css } from "../../styled-system/css/index.d.ts";
 import { createSelector, createSignal, For, Index } from "solid-js";
-import { Switch } from "../switch/switch.tsx";
+import * as Switch from "../components/ui/switch.tsx";
 import { useAtlasContext } from "../store/context.tsx";
 import { transform } from "ol/proj";
 import { STATION_ZOOM } from "../constants.ts";
+import { Button } from "../components/ui/button.tsx";
+import * as Select from "../components/ui/select.tsx";
+import { createListCollection } from "@ark-ui/solid";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -52,6 +55,33 @@ export function Panel(
   const [seeFewerStations, setSeeFewerStations] = createSignal(false);
   const stationsView = () =>
     seeFewerStations() ? focusedStations().slice(0, 1) : focusedStations();
+  const collection = createListCollection({
+    items: [
+      { label: "21 Apr 2026", value: "2026-04-21" },
+      { label: "25 Jan 2026", value: "2026-01-25" },
+      {
+        label: "15 Oct 2025",
+        value: "2025-10-15",
+      },
+      {
+        label: "18 Feb 2025",
+        value: "2025-02-18",
+      },
+      {
+        label: "17 Apr 2024",
+        value: "2024-04-17",
+      },
+      {
+        label: "12 Jan 2024",
+        value: "2024-01-12",
+      },
+      {
+        label: "24 Oct 2023",
+        value: "2023-10-24",
+      },
+    ],
+  });
+
   return (
     <div id="panel" {...props}>
       <div
@@ -68,30 +98,13 @@ export function Panel(
         >
           Subway Stations
         </h1>
-        <button
+        <Button
           type="submit"
-          class={css({
-            border: "solid",
-            borderWidth: "medium",
-            borderRadius: "lg",
-            borderColor: "amber.500",
-            padding: "0.5",
-            width: "10rem",
-            backgroundColor: "zinc.50",
-            fontWeight: "bolder",
-            lineHeight: "1rem",
-            color: "sky.700",
-            alignSelf: "end",
-            _hover: {
-              cursor: "pointer",
-              backgroundColor: "zinc.200",
-            },
-          })}
           onClick={() =>
             setPanelView((view) => view === "about" ? "stations" : "about")}
         >
           {`${panelView() === "about" ? "See stations" : "Learn more"}`}
-        </button>
+        </Button>
       </div>
       {panelView() === "stations"
         ? (
@@ -112,63 +125,38 @@ export function Panel(
                   alignItems: "center",
                 })}
               >
-                <label for="snapshot-selector">Snapshot in time</label>
-                <select
-                  id="snapshot-selector"
-                  onInput={(e) => {
-                    const { value } = e.currentTarget;
-                    setSelectedAccessibilitySnapshot(value);
+                <Select.Root
+                  collection={collection}
+                  value={[selectedAccessibilitySnapshot()]}
+                  onValueChange={(details) => {
+                    setSelectedAccessibilitySnapshot(details.items[0].value);
                   }}
-                  class={css({
-                    borderStyle: "solid",
-                    borderWidth: "thin",
-                    borderRadius: "lg",
-                    borderColor: "zinc.500",
-                  })}
                 >
-                  <option
-                    value="2026-04-21"
-                    selected={isSnapshotSelected("2026-04-21")}
-                  >
-                    21 Apr 2026
-                  </option>
-                  <option
-                    value="2026-01-25"
-                    selected={isSnapshotSelected("2026-01-25")}
-                  >
-                    25 Jan 2026
-                  </option>
-                  <option
-                    value="2025-10-15"
-                    selected={isSnapshotSelected("2025-10-15")}
-                  >
-                    15 Oct 2025
-                  </option>
-                  <option
-                    value="2025-02-18"
-                    selected={isSnapshotSelected("2025-02-18")}
-                  >
-                    18 Feb 2025
-                  </option>
-                  <option
-                    value="2024-04-17"
-                    selected={isSnapshotSelected("2024-04-17")}
-                  >
-                    17 Apr 2024
-                  </option>
-                  <option
-                    value="2024-01-12"
-                    selected={isSnapshotSelected("2024-01-12")}
-                  >
-                    12 Jan 2024
-                  </option>
-                  <option
-                    value="2023-10-24"
-                    selected={isSnapshotSelected("2023-10-24")}
-                  >
-                    24 Oct 2023
-                  </option>
-                </select>
+                  <Select.HiddenSelect />
+                  <Select.Label>Snapshot in time</Select.Label>
+                  <Select.Control>
+                    <Select.Trigger>
+                      <Select.ValueText />
+                      <Select.IndicatorGroup>
+                        <Select.Indicator />
+                      </Select.IndicatorGroup>
+                    </Select.Trigger>
+                  </Select.Control>
+                  <Select.Positioner>
+                    <Select.Content>
+                      <For each={collection.items}>
+                        {(item) => (
+                          <Select.Item item={item}>
+                            <Select.ItemText>
+                              {item.label}
+                            </Select.ItemText>
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        )}
+                      </For>
+                    </Select.Content>
+                  </Select.Positioner>
+                </Select.Root>
               </div>
               <div
                 class={css({
@@ -178,14 +166,21 @@ export function Panel(
                   alignItems: "center",
                 })}
               >
-                <p>Show only stations upgraded at snapshot</p>
-                <Switch
-                  isChecked={filterToUpgraded}
-                  onInputChange={() =>
+                <Switch.Root
+                  checked={filterToUpgraded()}
+                  onCheckedChange={() =>
                     setFilterToUpgraded((filterToUpgraded) =>
                       !filterToUpgraded
                     )}
-                />
+                >
+                  <Switch.Label>
+                    Show only stations upgraded at snapshot
+                  </Switch.Label>
+                  <Switch.Control>
+                    <Switch.Thumb />
+                  </Switch.Control>
+                  <Switch.HiddenInput />
+                </Switch.Root>
               </div>
             </div>
             <div
@@ -308,29 +303,11 @@ export function Panel(
                 }}
               </For>
             </div>
-            <button
-              type="submit"
-              class={css({
-                border: "solid",
-                borderWidth: "medium",
-                borderRadius: "lg",
-                borderColor: "amber.500",
-                padding: "0.5",
-                width: "10rem",
-                backgroundColor: "zinc.50",
-                fontWeight: "bolder",
-                lineHeight: "1rem",
-                color: "sky.700",
-                alignSelf: "end",
-                _hover: {
-                  cursor: "pointer",
-                  backgroundColor: "zinc.200",
-                },
-              })}
+            <Button
               onClick={() => setSeeFewerStations((state) => !state)}
             >
               {`See ${seeFewerStations() ? "more" : "fewer"} stations`}
-            </button>
+            </Button>
           </>
         )
         : (
