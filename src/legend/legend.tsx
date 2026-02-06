@@ -1,7 +1,7 @@
 import { JSX, JSXElement } from "solid-js";
 import { CircleIcon } from "./icon/index.ts";
 // @ts-ignore .ts file not created by styled-system
-import { css } from "../../styled-system/css/index.d.ts";
+import { css } from "#styled-system/css/index.d.ts";
 
 export function Legend(props: JSX.HTMLAttributes<HTMLDivElement>): JSXElement {
   return (

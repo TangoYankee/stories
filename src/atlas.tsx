@@ -1,19 +1,19 @@
 import { createEffect, createSignal, JSX, JSXElement, onMount } from "solid-js";
+import { Coordinate } from "ol/coordinate";
+import RenderFeature from "ol/render/Feature";
 import "ol/ol.css";
 import { Map } from "ol";
 import { transform, useGeographic } from "ol/proj";
-import { attribution, view, zoom } from "./controls/index.tsx";
+import { attribution, view, zoom } from "#src/controls/index.tsx";
 import {
   nycBasemap,
   subwayLine,
   SubwayStationsAda,
   subwayStationsAda,
-} from "./layers/index.ts";
-import { cartesianDistance } from "./utils.tsx";
-import { useAtlasContext } from "./store/context.tsx";
-import { FULL_EXTENT_VIEW, STATION_ZOOM } from "./constants.ts";
-import { Coordinate } from "ol/coordinate";
-import RenderFeature from "ol/render/Feature";
+} from "#src/layers/index.ts";
+import { cartesianDistance } from "#src/utils.tsx";
+import { useAtlasContext } from "#src/store/context.tsx";
+import { FULL_EXTENT_VIEW, STATION_ZOOM } from "#src/constants.ts";
 
 const findStationsInExtent = (
   features: Array<RenderFeature>,

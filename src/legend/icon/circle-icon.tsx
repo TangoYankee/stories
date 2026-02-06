@@ -1,6 +1,6 @@
 import { JSXElement } from "solid-js";
 // @ts-ignore .ts file not created by styled-system
-import { cva, type RecipeVariant } from "../../../styled-system/css/index.d.ts";
+import { cva, type RecipeVariant } from "#styled-system/css/index.d.ts";
 
 const circleIconStyle = cva({
   base: {

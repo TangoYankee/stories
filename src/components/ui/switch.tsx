@@ -5,9 +5,9 @@ import {
   createStyleContext,
   styled,
   // @ts-ignore .ts file not created by styled-system
-} from "../../../styled-system/jsx/index.d.ts";
+} from "#styled-system/jsx/index.d.ts";
 // @ts-ignore .ts file not created by styled-system
-import { switchRecipe } from "../../../styled-system/recipes/index.d.ts";
+import { switchRecipe } from "#styled-system/recipes/index.d.ts";
 
 const { withProvider, withContext } = createStyleContext(switchRecipe);
 

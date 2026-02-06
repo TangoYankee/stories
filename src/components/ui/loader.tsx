@@ -1,8 +1,9 @@
 import { type JSX, splitProps } from "solid-js";
-import type { HTMLStyledProps } from "styled-system/jsx";
-import { AbsoluteCenter } from "./absolute-center";
-import { Span } from "./span";
-import { Spinner } from "./spinner";
+import { AbsoluteCenter } from "#ui/absolute-center.tsx";
+import { Span } from "#ui/span.tsx";
+import { Spinner } from "#ui/spinner.tsx";
+// @ts-ignore .ts file not created by styled-system
+import type { HTMLStyledProps } from "#styled-system/jsx/index.d.ts";
 
 export interface LoaderProps extends HTMLStyledProps<"span"> {
   /**

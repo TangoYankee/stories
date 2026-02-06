@@ -6,14 +6,14 @@ import { Show } from "solid-js";
 import {
   createStyleContext,
   // @ts-ignore .ts file not created by styled-system
-} from "../../../styled-system/jsx/index.d.ts";
+} from "#styled-system/jsx/index.d.ts";
 import {
   select,
   type SelectVariantProps,
   // @ts-ignore .ts file not created by styled-system
-} from "../../../styled-system/recipes/index.d.ts";
+} from "#styled-system/recipes/index.d.ts";
 // @ts-ignore .ts file not created by styled-system
-import type { HTMLStyledProps } from "../../../styled-system/types/index.d.ts";
+import type { HTMLStyledProps } from "#styled-system/types/index.d.ts";
 
 const { withProvider, withContext } = createStyleContext(select);
 

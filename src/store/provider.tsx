@@ -1,8 +1,8 @@
 import { createSignal, ParentComponent } from "solid-js";
-import { AtlasContext } from "./context.tsx";
-import { SubwayStationsAda } from "../layers/subway_stations_ada_layer.ts";
 import { View } from "ol";
 import { Coordinate } from "ol/coordinate";
+import { SubwayStationsAda } from "#src/layers/subway_stations_ada_layer.ts";
+import { AtlasContext } from "./context.tsx";
 
 export function useAtlasProviderValue() {
   const [filterToUpgraded, setFilterToUpgraded] = createSignal(false);

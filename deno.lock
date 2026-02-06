@@ -3,8 +3,6 @@
   "specifiers": {
     "npm:@ark-ui/solid@^5.30.0": "5.36.1_solid-js@1.9.12",
     "npm:@pandacss/dev@^1.10.0": "1.10.0_typescript@6.0.2",
-    "npm:@types/lodash.clonedeep@^4.5.9": "4.5.9",
-    "npm:lodash.clonedeep@^4.5.0": "4.5.0",
     "npm:lucide-solid@0.563": "0.563.0_solid-js@1.9.12",
     "npm:ol-pmtiles@^2.0.2": "2.0.2_ol@10.9.0",
     "npm:ol@^10.9.0": "10.9.0",
@@ -1139,15 +1137,6 @@
     },
     "@types/estree@1.0.8": {
       "integrity": "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="
-    },
-    "@types/lodash.clonedeep@4.5.9": {
-      "integrity": "sha512-19429mWC+FyaAhOLzsS8kZUsI+/GmBAQ0HFiCPsKGU+7pBXOQWhyrY6xNNDwUSX8SMZMJvuFVMF9O5dQOlQK9Q==",
-      "dependencies": [
-        "@types/lodash"
-      ]
-    },
-    "@types/lodash@4.17.24": {
-      "integrity": "sha512-gIW7lQLZbue7lRSWEFql49QJJWThrTFFeIMJdp3eH4tKoxm1OvEPg02rm4wCCSHS0cL3/Fizimb35b7k8atwsQ=="
     },
     "@types/node@17.0.45": {
       "integrity": "sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw=="
@@ -2608,9 +2597,6 @@
         "lightningcss-win32-x64-msvc"
       ]
     },
-    "lodash.clonedeep@4.5.0": {
-      "integrity": "sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ=="
-    },
     "lodash.merge@4.6.2": {
       "integrity": "sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ=="
     },
@@ -3335,8 +3321,6 @@
       "dependencies": [
         "npm:@ark-ui/solid@^5.30.0",
         "npm:@pandacss/dev@^1.10.0",
-        "npm:@types/lodash.clonedeep@^4.5.9",
-        "npm:lodash.clonedeep@^4.5.0",
         "npm:lucide-solid@0.563",
         "npm:ol-pmtiles@^2.0.2",
         "npm:ol@^10.9.0",

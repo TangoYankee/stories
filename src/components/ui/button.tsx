@@ -8,15 +8,15 @@ import {
   Show,
   splitProps,
 } from "solid-js";
+import { Group, type GroupProps } from "#ui/group.tsx";
+import { Loader } from "#ui/loader.tsx";
 // @ts-ignore .ts file not created by styled-system
-import { styled } from "../../../styled-system/jsx/index.d.ts";
+import { styled } from "#styled-system/jsx/index.d.ts";
 import {
   button,
   type ButtonVariantProps,
   // @ts-ignore .ts file not created by styled-system
-} from "../../../styled-system/recipes/index.d.ts";
-import { Group, type GroupProps } from "./group";
-import { Loader } from "./loader";
+} from "#styled-system/recipes/index.d.ts";
 
 interface ButtonLoadingProps {
   /**

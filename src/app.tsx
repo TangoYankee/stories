@@ -1,10 +1,10 @@
 import { type Component } from "solid-js";
+import { Atlas } from "#src/atlas.tsx";
+import { AttributionControl, ZoomControl } from "#src/controls/index.tsx";
+import { Panel } from "#src/panel/index.ts";
+import { AtlasProvider } from "#src/store/provider.tsx";
 // @ts-ignore .ts file not created by styled-system
-import { css } from "../styled-system/css/index.d.ts";
-import { Atlas } from "./atlas.tsx";
-import { AttributionControl, ZoomControl } from "./controls/index.tsx";
-import { Panel } from "./panel/index.ts";
-import { AtlasProvider } from "./store/provider.tsx";
+import { css } from "#styled-system/css/index.d.ts";
 
 export type Display = "closed" | "half" | "full";
 const App: Component = () => {

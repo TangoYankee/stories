@@ -12,17 +12,20 @@
   "license": "MIT",
   "devDependencies": {
     "@pandacss/dev": "^1.10.0",
-    "@types/lodash.clonedeep": "^4.5.9",
     "solid-devtools": "^0.34.5",
     "vite": "^7.3.2",
     "vite-plugin-solid": "^2.11.12"
   },
   "dependencies": {
     "@ark-ui/solid": "^5.30.0",
-    "lodash.clonedeep": "^4.5.0",
     "lucide-solid": "^0.563.0",
     "ol": "^10.9.0",
     "ol-pmtiles": "^2.0.2",
     "solid-js": "^1.9.12"
+  },
+  "imports": {
+    "#styled-system/*": "./styled-system/*",
+    "#src/*": "./src/*",
+    "#ui/*": "./src/components/ui/*"
   }
 }

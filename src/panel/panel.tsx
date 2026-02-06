@@ -1,15 +1,15 @@
-import { JSX } from "solid-js/jsx-runtime";
-import { CircleIcon } from "../legend/index.ts";
-// @ts-ignore .ts file not created by styled-system
-import { css } from "../../styled-system/css/index.d.ts";
 import { createSelector, createSignal, For, Index } from "solid-js";
-import * as Switch from "../components/ui/switch.tsx";
-import { useAtlasContext } from "../store/context.tsx";
-import { transform } from "ol/proj";
-import { STATION_ZOOM } from "../constants.ts";
-import { Button } from "../components/ui/button.tsx";
-import * as Select from "../components/ui/select.tsx";
+import { JSX } from "solid-js/jsx-runtime";
 import { createListCollection } from "@ark-ui/solid";
+import { transform } from "ol/proj";
+import { CircleIcon } from "#src/legend/index.ts";
+import { useAtlasContext } from "#src/store/context.tsx";
+import { STATION_ZOOM } from "#src/constants.ts";
+import { Button } from "#ui/button.tsx";
+import * as Select from "#ui/select.tsx";
+import * as Switch from "#ui/switch.tsx";
+// @ts-ignore .ts file not created by styled-system
+import { css } from "#styled-system/css/index.d.ts";
 
 const routeIconFileName: Record<string, string> = {
   "1": "1",
@@ -50,7 +50,6 @@ export function Panel(
     setSelectedAccessibilitySnapshot,
   } = useAtlasContext();
   const isStationSelected = createSelector(() => focusedStations().at(0)?.id);
-  const isSnapshotSelected = createSelector(selectedAccessibilitySnapshot);
   const [panelView, setPanelView] = createSignal<"about" | "stations">("about");
   const [seeFewerStations, setSeeFewerStations] = createSignal(false);
   const stationsView = () =>
