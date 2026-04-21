@@ -1,8 +1,8 @@
 import VectorTile from "ol/layer/VectorTile";
 import { PMTilesVectorSource } from "ol-pmtiles";
-import { FILE_BUCKET } from "../constants.ts";
 import { type Accessor } from "solid-js";
 import { Circle, Fill, Stroke, Style } from "ol/style";
+import { env } from "../env.ts";
 
 export interface SubwayStationsAda {
   id: string;
@@ -20,7 +20,7 @@ export const subwayStationsAda = (
 ) =>
   new VectorTile({
     source: new PMTilesVectorSource({
-      url: `${FILE_BUCKET}/ada-subway-stations.pmtiles`,
+      url: `${env.viteTileCdn}/ada-subway-stations.pmtiles`,
       attributions: `<a href="https://data.ny.gov/">NYS</a>; `,
     }),
     style: (feature, resolution) => {

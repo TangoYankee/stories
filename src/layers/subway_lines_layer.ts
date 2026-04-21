@@ -1,7 +1,7 @@
 import { PMTilesVectorSource } from "ol-pmtiles";
 import { VectorTile } from "ol/layer";
-import { FILE_BUCKET } from "../constants.ts";
 import { Stroke, Style } from "ol/style";
+import { env } from "../env.ts";
 
 export interface SubwayLine {
   id: number;
@@ -41,7 +41,7 @@ const lineColors: Record<string, string> = {
 export const subwayLine = () =>
   new VectorTile({
     source: new PMTilesVectorSource({
-      url: `${FILE_BUCKET}/subway-lines.pmtiles`,
+      url: `${env.viteTileCdn}/subway-lines.pmtiles`,
     }),
     style: (feature) => {
       const { service } = feature.getProperties() as SubwayLine;

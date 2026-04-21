@@ -1,7 +1,7 @@
 import { PMTilesVectorSource } from "ol-pmtiles";
-import { FILE_BUCKET } from "../constants.ts";
 import VectorTile from "ol/layer/VectorTile";
 import { Fill, Style } from "ol/style";
+import { env } from "../env.ts";
 
 const getColor = (layer: string, kind: string) => {
   switch (layer) {
@@ -44,7 +44,7 @@ const getColor = (layer: string, kind: string) => {
 export const nycBasemap = () =>
   new VectorTile({
     source: new PMTilesVectorSource({
-      url: `${FILE_BUCKET}/nyc_20242003.pmtiles`,
+      url: `${env.viteTileCdn}/nyc-basic-layers-14-apr-2026.pmtiles`,
       attributions: `© <a href="https://www.openstreetmap.org">OSM</a>; `,
     }),
     style: (feature) => {
