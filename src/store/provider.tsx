@@ -12,7 +12,7 @@ export function useAtlasProviderValue() {
   >([]);
 
   const [selectedAccessibilitySnapshot, setSelectedAccessibilitySnapshot] =
-    createSignal("2026-01-25");
+    createSignal("2026-04-21");
 
   const [mapView, setMapView] = createSignal<View>();
 
