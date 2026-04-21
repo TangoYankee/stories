@@ -413,8 +413,8 @@ export function Panel(
                 })}
               >
                 A new snapshot is added every 3 to 6 months, with the{" "}
-                <i>next planned snapshot in April 2026.</i> Data are sourced from
-                {" "}
+                <i>next planned snapshot in April 2026.</i>{" "}
+                Data are sourced from{" "}
                 <a
                   class={css({
                     color: "sky.700",
