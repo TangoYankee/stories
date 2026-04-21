@@ -10,6 +10,7 @@ ogr2ogr -nln source_subway_station_2025_apr_15 PG:"dbname=$POSTGRES_DB host=etl-
 ogr2ogr -nln source_subway_station_2025_jul_15 PG:"dbname=$POSTGRES_DB host=etl-postgis-1 user=$POSTGRES_USER port=5432" data/2025_jul_15_nyc_subway_stations.csv -overwrite
 ogr2ogr -nln source_subway_station_2025_oct_15 PG:"dbname=$POSTGRES_DB host=etl-postgis-1 user=$POSTGRES_USER port=5432" data/2025_oct_15_nyc_subway_stations.csv -overwrite
 ogr2ogr -nln source_subway_station_2026_jan_25 PG:"dbname=$POSTGRES_DB host=etl-postgis-1 user=$POSTGRES_USER port=5432" data/2026_jan_25_nyc_subway_stations.csv -overwrite
+ogr2ogr -nln source_subway_station_2026_apr_21 PG:"dbname=$POSTGRES_DB host=etl-postgis-1 user=$POSTGRES_USER port=5432" data/2026_apr_21_nyc_subway_stations.csv -overwrite
 
 ogr2ogr -nln source_subway_line PG:"dbname=$POSTGRES_DB host=etl-postgis-1 user=$POSTGRES_USER port=5432" data/nyc_subway_lines.geojson -overwrite
 

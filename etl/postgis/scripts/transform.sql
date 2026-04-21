@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS source_subway_station_combined (
 	ada_2025_feb_18 char(1) CHECK (ada_2025_feb_18 IN ('0', '1', '2')),
 	ada_2025_oct_15 char(1) CHECK (ada_2025_oct_15 IN ('0', '1', '2')),
 	ada_2026_jan_25 char(1) CHECK (ada_2026_jan_25 IN ('0', '1', '2')),
+	ada_2026_apr_21 char(1) CHECK (ada_2026_apr_21 IN ('0', '1', '2')),
     fill geography(Point, 4326)
 );
 
@@ -28,6 +29,7 @@ INSERT INTO source_subway_station_combined (
 	ada_2025_feb_18,
 	ada_2025_oct_15,
 	ada_2026_jan_25,
+	ada_2026_apr_21,
 	fill
 )
 SELECT
@@ -40,21 +42,24 @@ SELECT
 	source_subway_station_2025_feb_18.ada,
 	source_subway_station_2025_oct_15.ada,
 	source_subway_station_2026_jan_25.ada,
+	source_subway_station_2026_apr_21.ada,
 	ST_POINT(
 	    source_subway_station_2025_oct_15.gtfs_longitude::decimal,
 		source_subway_station_2025_oct_15.gtfs_latitude::decimal
 	)::geography as fill
-FROM source_subway_station_2026_jan_25
+FROM source_subway_station_2026_apr_21
+LEFT JOIN  source_subway_station_2026_jan_25
+    ON source_subway_station_2026_jan_25."gtfs stop id" = source_subway_station_2026_apr_21."gtfs stop id"
 LEFT JOIN  source_subway_station_2025_oct_15
     ON source_subway_station_2025_oct_15.gtfs_stop_id = source_subway_station_2026_jan_25."gtfs stop id"
 LEFT JOIN source_subway_station_2025_feb_18
 	ON source_subway_station_2025_feb_18.gtfs_stop_id = source_subway_station_2025_oct_15.gtfs_stop_id
 LEFT JOIN source_subway_station_2024_apr_17
-	ON source_subway_station_2024_apr_17.gtfs_stop_id = source_subway_station_2025_oct_15.gtfs_stop_id
+	ON source_subway_station_2024_apr_17.gtfs_stop_id = source_subway_station_2025_feb_18.gtfs_stop_id
 LEFT JOIN source_subway_station_2024_jan_12
-	ON source_subway_station_2024_jan_12.gtfs_stop_id = source_subway_station_2025_oct_15.gtfs_stop_id
+	ON source_subway_station_2024_jan_12.gtfs_stop_id = source_subway_station_2024_apr_17.gtfs_stop_id
 LEFT JOIN source_subway_station_2023_oct_24
-	ON source_subway_station_2023_oct_24.gtfs_stop_id = source_subway_station_2025_oct_15.gtfs_stop_id;
+	ON source_subway_station_2023_oct_24.gtfs_stop_id = source_subway_station_2024_jan_12.gtfs_stop_id;
 
 CREATE TABLE IF NOT EXISTS subway_ada (
 	id smallint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -84,6 +89,7 @@ SELECT
 		WHEN ada_2025_feb_18 = '1' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '1' THEN date('2025_oct_15')
 		WHEN ada_2026_jan_25 = '1' THEN date('2026_jan_25')
+		WHEN ada_2026_apr_21 = '1' THEN date('2026_apr_21')
 	END,
 	CASE
 		WHEN ada_2023_oct_24 = '2' THEN date('2023_oct_24')
@@ -92,6 +98,7 @@ SELECT
 		WHEN ada_2025_feb_18 = '2' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '2' THEN date('2025_oct_15')
 		WHEN ada_2026_jan_25 = '2' THEN date('2026_jan_25')
+		WHEN ada_2026_apr_21 = '2' THEN date('2026_apr_21')
 	END,
 		CASE
 		WHEN ada_2023_oct_24 = '0' THEN date('2023_oct_24')
@@ -100,6 +107,7 @@ SELECT
 		WHEN ada_2025_feb_18 = '0' THEN date('2025_feb_18')
 		WHEN ada_2025_oct_15 = '0' THEN date('2025_oct_15')
 		WHEN ada_2026_jan_25 = '0' THEN date('2026_jan_25')
+		WHEN ada_2026_apr_21 = '0' THEN date('2026_apr_21')
 	END,
 	fill
 FROM source_subway_station_combined
