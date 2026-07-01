@@ -418,19 +418,42 @@ export function Panel(
                   padding: "0.5",
                 })}
               >
-                A new snapshot is added every 3 to 6 months, with the{" "}
-                <i>next planned snapshot in July 2026.</i> Data are sourced from
-                {" "}
+                Data are sourced from{" "}
                 <a
                   class={css({
                     color: "sky.700",
                     _hover: {
                       textDecoration: "underline",
                     },
+                    _visited: {
+                      color: "indigo.700",
+                    },
                   })}
                   href="https://data.ny.gov/Transportation/MTA-Subway-Stations/39hk-dx4f/about_data"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   NYC Open Data MTA Subway Stations Dataset
+                </a>
+                <i>
+                  This site is no longer maintain.{" "}
+                </i>
+                For future updates, follow at{" "}
+                <a
+                  href="https://morningatlas.com/mta-subway-accessibility"
+                  class={css({
+                    color: "sky.700",
+                    _hover: {
+                      textDecoration: "underline",
+                    },
+                    _visited: {
+                      color: "indigo.700",
+                    },
+                  })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  morningatlas.com/mta-subway-accessibility
                 </a>
               </p>
               <p
